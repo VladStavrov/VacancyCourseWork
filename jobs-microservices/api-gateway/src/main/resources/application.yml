@@ -2,8 +2,8 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: test
-          uri: lb://eclient2
+        - id: auth-server
+          uri: lb://authorization-service
           predicates:
-            - Path=/main/test
+            - Path=/identity/**
 
