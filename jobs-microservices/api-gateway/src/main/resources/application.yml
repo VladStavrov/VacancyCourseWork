@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: test
+          uri: lb://eclient2
+          predicates:
+            - Path=/main/test
+
