@@ -2,10 +2,10 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: auth-server-no-filter
-          uri: lb://authorization-service
-          predicates:
-            - Path=/identity/**
+          - id: auth-server-no-filter
+            uri: lb://authorization-service
+            predicates:
+              - Path=/identity/**
 
       #  - id: auth-server-registration
       #    uri: lb://authorization-service
