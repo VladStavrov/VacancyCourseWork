@@ -28,7 +28,6 @@ public class PersonService implements UserDetailsService {
     public Person findByUsername(String username) {
         return personRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(("User with this id not found")));
     }
-
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -39,12 +38,11 @@ public class PersonService implements UserDetailsService {
                 person.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
         );
     }
-
     public Person createPerson(RegistrationUserDTO registrationUserDTO) {
         Person person = new Person();
         person.setPassword(passwordEncoder.encode(registrationUserDTO.getPassword()));
         person.setUsername(registrationUserDTO.getUsername());
-        person.setRoles(List.of(roleService.getUserRole()));
+        person.setRoles(List.of(roleService.getUserRole(),roleService.getAdminRole()));
         return personRepository.save(person);
     }
 

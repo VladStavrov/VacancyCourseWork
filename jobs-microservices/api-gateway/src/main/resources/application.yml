@@ -2,8 +2,16 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: auth-server
+        - id: auth-server-no-filter
           uri: lb://authorization-service
           predicates:
             - Path=/identity/**
 
+      #  - id: auth-server-registration
+      #    uri: lb://authorization-service
+      #    predicates:
+      #      - Path=/identity/registration
+      #    filters:
+      #      - name: AuthenticationFilter
+      #        args:
+      #          requiredRole: ROLE_ADMIN

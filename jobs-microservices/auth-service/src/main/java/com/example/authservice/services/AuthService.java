@@ -33,7 +33,7 @@ public class AuthService {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
                     authRequest.getPassword()));
         } catch(BadCredentialsException e){
-            throw new LocalException(HttpStatus.UNAUTHORIZED,"Incorrect login or password");
+            throw new LocalException(HttpStatus.UNAUTHORIZED,"Неверный логин или пароль");
         }
 
         UserDetails userDetails = personService.loadUserByUsername(authRequest.getUsername());

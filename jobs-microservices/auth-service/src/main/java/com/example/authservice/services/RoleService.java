@@ -24,4 +24,17 @@ public class RoleService {
            return newRole;
         }
     }
+    public Role getAdminRole() {
+
+        var role = roleRepository.findByName("ROLE_ADMIN");
+        if (role.isPresent()){
+            return role.get();
+        }
+        else {
+            var newRole = new Role();
+            newRole.setName("ROLE_ADMIN");
+            newRole = roleRepository.save(newRole);
+            return newRole;
+        }
+    }
 }
