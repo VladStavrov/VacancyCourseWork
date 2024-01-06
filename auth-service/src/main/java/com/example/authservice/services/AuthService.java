@@ -42,7 +42,7 @@ public class AuthService {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-    public ResponseEntity<PersonDTO> createNewPerson(@RequestBody RegistrationUserDTO registrationUserDTO)  {
+    public PersonDTO createNewPerson(@RequestBody RegistrationUserDTO registrationUserDTO)  {
         if(!registrationUserDTO.getPassword().equals(registrationUserDTO.getConfirmPassword())){
             throw new LocalException(HttpStatus.BAD_REQUEST,"Пароли не совпадают");
         }
@@ -51,7 +51,7 @@ public class AuthService {
         }
 
         Person person = personService.createPerson(registrationUserDTO);
-        return ResponseEntity.ok(new PersonDTO(person.getId(), person.getUsername()));
+        return new PersonDTO(person.getId(), person.getUsername());
     }
 
 
