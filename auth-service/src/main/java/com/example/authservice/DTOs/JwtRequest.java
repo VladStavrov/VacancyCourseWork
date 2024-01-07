@@ -1,4 +1,4 @@
-package com.example.authservice.requests;
+package com.example.authservice.DTOs;
 
 import lombok.Data;
 

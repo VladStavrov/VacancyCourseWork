@@ -17,15 +17,14 @@ import java.util.List;
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
     private static final String DEFAULT_REQUIRED_ROLE = "ROLE_USER";
 
-    private final RouteValidator validator;
     private final JWTUtil jwtUtil;
 
 
 
 
-    public AuthenticationFilter(RouteValidator validator, JWTUtil jwtUtil) {
+    public AuthenticationFilter(JWTUtil jwtUtil) {
         super(Config.class);
-        this.validator = validator;
+
         this.jwtUtil = jwtUtil;
     }
 
@@ -47,7 +46,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     requiredRole=DEFAULT_REQUIRED_ROLE;
                 }
                     List<String> roles = jwtUtil.getRoles(authHeader);
-                System.out.println("Список ролей пользователя: "+roles +" Необходимая роль: "+requiredRole);
                     if (!isValidRole(roles,requiredRole)) {
 
                         throw new LocalException(HttpStatus.FORBIDDEN, "User does not have the required role");

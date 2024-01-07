@@ -1,4 +1,4 @@
-package com.example.authservice.responses;
+package com.example.authservice.DTOs;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,5 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class JwtResponse {
     private final String type = "Bearer";
-    private String token;
+    private String accessToken;
+    private String refreshToken;
+
 }

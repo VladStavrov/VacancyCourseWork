@@ -1,6 +1,10 @@
 package com.example.authservice.utils;
 
+import com.example.authservice.models.Person;
+import com.example.authservice.models.Role;
 import io.jsonwebtoken.*;
+import jakarta.servlet.ServletException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -12,27 +16,34 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static io.jsonwebtoken.SignatureAlgorithm.HS512;
+
 @Component
 public class JWTUtil {
-
-    private final String secret= "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
-
-    private final Duration lifetime=Duration.ofMinutes(50L);
-    public String generateToken(UserDetails userDetails){
+    @Value("${jwt.secret}")
+    private  String secret;
+    private final SignatureAlgorithm ALGORITHM = HS512;
+    @Value("${jwt.lifetime}")
+    private  Long lifetime;
+    public String generateToken(Person person ) throws ServletException {
+        try {
         Map<String,Object> claims = new HashMap<>();
-        List<String> rolesList= userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+        List<String> rolesList= person.getRoles().stream()
+                .map(Role::getName)
                 .collect(Collectors.toList());
         claims.put("roles",rolesList);
         Date issuedDate = new Date();
-        Date expiredDate = new Date(issuedDate.getTime() +lifetime.toMillis());
+        Date expiredDate = new Date(issuedDate.getTime() +Duration.ofMinutes(lifetime).toMillis());
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(userDetails.getUsername())
+                .setSubject(person.getUsername())
                 .setIssuedAt(issuedDate)
                 .setExpiration(expiredDate)
-                .signWith(SignatureAlgorithm.HS256,secret)
+                .signWith(ALGORITHM,secret)
                 .compact();
+    } catch (Exception e) {
+        throw new ServletException("Error creating JWT token", e);
+    }
     }
 
     public String getUsername(String token){

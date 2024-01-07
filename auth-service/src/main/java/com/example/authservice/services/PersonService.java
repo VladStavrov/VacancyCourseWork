@@ -2,10 +2,12 @@ package com.example.authservice.services;
 
 
 import com.example.authservice.DTOs.RegistrationUserDTO;
+import com.example.authservice.exceptions.LocalException;
 import com.example.authservice.models.Person;
 import com.example.authservice.repositories.PersonRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,6 +41,9 @@ public class PersonService implements UserDetailsService {
         );
     }
     public Person createPerson(RegistrationUserDTO registrationUserDTO) {
+        if(personRepository.findByUsername(registrationUserDTO.getUsername()).isPresent()){
+            throw new LocalException(HttpStatus.BAD_REQUEST,"Такой пользователь уже существует");
+        }
         Person person = new Person();
         person.setPassword(passwordEncoder.encode(registrationUserDTO.getPassword()));
         person.setUsername(registrationUserDTO.getUsername());

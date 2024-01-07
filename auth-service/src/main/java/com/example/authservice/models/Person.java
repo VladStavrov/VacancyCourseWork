@@ -17,6 +17,10 @@ public class Person {
     private String username;
     private String password;
 
+    @OneToOne(mappedBy = "person")
+    private RefreshToken refreshToken;
+
+
     @ManyToMany
     @JoinTable(
             name = "users_roles",
