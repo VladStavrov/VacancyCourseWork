@@ -31,7 +31,7 @@ public class AuthService {
     private final JWTUtil jwtUtil;
     private  final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
-    public ResponseEntity<?> authorize(@RequestBody JwtRequest authRequest){
+    public JwtResponse authorize(@RequestBody JwtRequest authRequest){
         try {
             System.out.println(authRequest);
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
@@ -47,7 +47,7 @@ public class AuthService {
         } catch (ServletException e) {
             throw new RuntimeException(e);
         }
-        return ResponseEntity.ok(new JwtResponse(token,refreshToken.getToken()));
+        return new JwtResponse(token,refreshToken.getToken());
     }
 
     public PersonDTO createNewPerson(@RequestBody RegistrationUserDTO registrationUserDTO)  {

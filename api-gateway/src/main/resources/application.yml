@@ -15,7 +15,7 @@ spring:
           - id: auth-server-no-filter
             uri: lb://authorization-service
             predicates:
-              - Path=/identity/**
+              - Path=/api/identity/**
 
       #  - id: auth-server-registration
       #    uri: lb://authorization-service
