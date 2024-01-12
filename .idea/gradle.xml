@@ -36,6 +36,22 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/tree-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/tree-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/vacancy-service" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/vacancy-service" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
