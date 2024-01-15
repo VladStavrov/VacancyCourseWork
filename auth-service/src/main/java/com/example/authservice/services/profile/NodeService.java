@@ -14,7 +14,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,7 +69,19 @@ public class NodeService {
 
         return mapNodeToDTO(updatedNode);
     }
-
+    public Set<Node> updateSkills(Set<NodeDTO> newSkillDTOs) {
+        Set<Node> nodeList = new HashSet<>();
+        for (NodeDTO skillDTO : newSkillDTOs) {
+            Node skill;
+            try {
+                skill = getNodeBySlug(skillDTO.getSlug());
+            } catch (ResponseStatusException e) {
+                skill = createNode(skillDTO);
+            }
+            nodeList.add(skill);
+        }
+        return nodeList;
+    }
     @Transactional
     public void deleteNode(String slug) {
         Node node = nodeRepository.findBySlug(slug)

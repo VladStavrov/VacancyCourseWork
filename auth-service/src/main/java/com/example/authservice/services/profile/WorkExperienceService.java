@@ -34,7 +34,6 @@ public class WorkExperienceService {
 
     public WorkExperienceDTO getWorkExperienceDTOById(Long id) {
         WorkExperience workExperience = getWorkExperience(id);
-        System.out.println("--------"+workExperience);
         return mapWorkExperienceToDTO(workExperience);
     }
     public WorkExperience getWorkExperienceById(Long id) {
@@ -46,8 +45,8 @@ public class WorkExperienceService {
     public WorkExperience createWorkExperience(WorkExperienceDTO createDTO) {
         WorkExperience workExperience = mapDTOToWorkExperience(createDTO);
 
-        Set<Node> primarySkills = updateSkills(createDTO.getPrimarySkills());
-        Set<Node> secondarySkills = updateSkills(createDTO.getSecondarySkills());
+        Set<Node> primarySkills = nodeService.updateSkills(createDTO.getPrimarySkills());
+        Set<Node> secondarySkills = nodeService.updateSkills(createDTO.getSecondarySkills());
 
 
 
@@ -64,19 +63,7 @@ public class WorkExperienceService {
         WorkExperience createdWorkExperience = workExperienceRepository.save(workExperience);
         return createdWorkExperience;
     }
-    private Set<Node>  updateSkills( Set<NodeDTO> newSkillDTOs) {
-        Set<Node> nodeList = new HashSet<>();
-        for (NodeDTO skillDTO : newSkillDTOs) {
-            Node skill;
-            try {
-                skill = nodeService.getNodeBySlug(skillDTO.getSlug());
-            } catch (ResponseStatusException e) {
-                skill = nodeService.createNode(skillDTO);
-           }
-            nodeList.add(skill);
-        }
-        return nodeList;
-    }
+
     public WorkExperienceDTO updateWorkExperience(Long id, WorkExperienceDTO updateDTO) {
         WorkExperience existingWorkExperience = workExperienceRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "WorkExperience not found with id: " + id));
@@ -98,16 +85,34 @@ public class WorkExperienceService {
         }
         if (updateDTO.getPrimarySkills() != null) {
             existingWorkExperience.getPrimarySkills().clear();
-            Set<Node> primarySkills=updateSkills(updateDTO.getPrimarySkills());
+            Set<Node> primarySkills=nodeService.updateSkills(updateDTO.getPrimarySkills());
             existingWorkExperience.setPrimarySkills(primarySkills);
         }
         if (updateDTO.getSecondarySkills() != null) {
             existingWorkExperience.getSecondarySkills().clear();
-            Set<Node> primarySkills=updateSkills(updateDTO.getSecondarySkills());
+            Set<Node> primarySkills=nodeService.updateSkills(updateDTO.getSecondarySkills());
             existingWorkExperience.setSecondarySkills(primarySkills);
         }
         WorkExperience updatedWorkExperience = workExperienceRepository.save(existingWorkExperience);
         return mapWorkExperienceToDTO(updatedWorkExperience);
+    }
+    public List<WorkExperience> updateWorkExperience(List<WorkExperienceDTO> newWorkExp) {
+        List<WorkExperience> workExperienceList = new ArrayList<>();
+        for (WorkExperienceDTO experienceDTO : newWorkExp) {
+            WorkExperience workExperience;
+            try {
+                if(experienceDTO.getId()!=null){
+                    workExperience = getWorkExperienceById(experienceDTO.getId());
+                }
+               else{
+                    workExperience = createWorkExperience(experienceDTO);
+                }
+            } catch (ResponseStatusException e) {
+                workExperience = createWorkExperience(experienceDTO);
+            }
+            workExperienceList.add(workExperience);
+        }
+        return workExperienceList;
     }
     public void deleteWorkExperience(Long id) {
         WorkExperience workExperience = getWorkExperience(id);

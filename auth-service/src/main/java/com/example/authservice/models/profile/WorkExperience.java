@@ -31,7 +31,7 @@ public class WorkExperience {
     @Column(nullable = false)
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
     @JoinColumn(name = "profile_id")
     private Profile profile;
 

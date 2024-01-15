@@ -30,10 +30,7 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.anyRequest().permitAll());
         return http.build();
-
     }
-
-
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
