@@ -1,10 +1,10 @@
-package com.example.authservice.services;
+package com.example.authservice.services.auth;
 
 
-import com.example.authservice.DTOs.RegistrationUserDTO;
+import com.example.authservice.DTOs.auth.RegistrationUserDTO;
 import com.example.authservice.exceptions.LocalException;
-import com.example.authservice.models.Person;
-import com.example.authservice.repositories.PersonRepository;
+import com.example.authservice.models.auth.Person;
+import com.example.authservice.repositories.auth.PersonRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

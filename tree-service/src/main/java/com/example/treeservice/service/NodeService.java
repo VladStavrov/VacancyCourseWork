@@ -41,9 +41,9 @@ public class NodeService {
                 .collect(Collectors.toList());
     }
 
-    public NodeDTO getNodeDTOById(Long id) {
-        Node node = nodeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with id: " + id));
+    public NodeDTO getNodeDTOBySlug(String slug) {
+        Node node = nodeRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
 
         return mapNodeToDTO(node);
     }
@@ -59,9 +59,9 @@ public class NodeService {
         return mapNodeToDTO(createdNode);
     }
 
-    public NodeDTO updateNode(Long id, NodeDTO updatedNodeDTO) {
-        Node existingNode = nodeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with id: " + id));
+    public NodeDTO updateNode(String slug, NodeDTO updatedNodeDTO) {
+        Node existingNode = nodeRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
         if (updatedNodeDTO.getNodeType() != null) {
             existingNode.setNodeType(updatedNodeDTO.getNodeType());
         }
@@ -78,9 +78,9 @@ public class NodeService {
 
         return mapNodeToDTO(updatedNode);
     }
-    public void deleteNode(Long id) {
-        Node node = nodeRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with id: " + id));
+    public void deleteNode(String slug) {
+        Node node = nodeRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
         nodeRepository.delete(node);
     }
     public NodeDTO mapNodeToDTO(Node node) {
@@ -123,7 +123,6 @@ public class NodeService {
             }
             nodeRepository.save(existing);
         }
-        System.out.println(";");
     }
 
 

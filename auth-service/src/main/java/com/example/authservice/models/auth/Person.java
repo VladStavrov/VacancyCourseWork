@@ -1,8 +1,8 @@
-package com.example.authservice.models;
+package com.example.authservice.models.auth;
 
+import com.example.authservice.models.profile.Profile;
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.util.Collection;
 
 @Entity
@@ -17,6 +17,7 @@ public class Person {
     private String username;
     private String password;
 
+
     @OneToOne(mappedBy = "person")
     private RefreshToken refreshToken;
 
@@ -28,5 +29,8 @@ public class Person {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Collection <Role> roles;
+
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Profile profile;
 
 }

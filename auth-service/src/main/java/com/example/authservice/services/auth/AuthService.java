@@ -1,24 +1,22 @@
-package com.example.authservice.services;
+package com.example.authservice.services.auth;
 
 
-import com.example.authservice.DTOs.PersonDTO;
-import com.example.authservice.DTOs.RegistrationUserDTO;
+import com.example.authservice.DTOs.auth.PersonDTO;
+import com.example.authservice.DTOs.auth.RegistrationUserDTO;
 import com.example.authservice.exceptions.LocalException;
 import com.example.authservice.exceptions.TokenRefreshException;
-import com.example.authservice.models.Person;
+import com.example.authservice.models.auth.Person;
 
-import com.example.authservice.DTOs.JwtRequest;
-import com.example.authservice.DTOs.JwtResponse;
-import com.example.authservice.models.RefreshToken;
+import com.example.authservice.DTOs.auth.JwtRequest;
+import com.example.authservice.DTOs.auth.JwtResponse;
+import com.example.authservice.models.auth.RefreshToken;
 import com.example.authservice.utils.JWTUtil;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 

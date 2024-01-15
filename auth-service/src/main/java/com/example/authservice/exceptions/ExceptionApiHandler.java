@@ -1,6 +1,6 @@
 package com.example.authservice.exceptions;
 
-import com.example.authservice.DTOs.ErrorDTO;
+import com.example.authservice.DTOs.auth.ErrorDTO;
 import jakarta.servlet.ServletException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,16 +34,16 @@ public class ExceptionApiHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(simpleMessage);
     }
 
-    @ExceptionHandler( ServletException.class)
+    /*@ExceptionHandler( ServletException.class)
     public ResponseEntity<String> handleServletException( ServletException ex) {
         logger.error("ServletException: {}",ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage());
-        String simpleMessage = "Error creating JWT token.";
+        String simpleMessage = "Error :{}"+ (ex.getRootCause() != null ? ex.getRootCause().getMessage() : ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(simpleMessage);
-    }
-    @ExceptionHandler(Exception.class)
+    }*/
+    /*@ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {
         logger.error("Unhandled Exception: {}", ex.getClass().getSimpleName());
         String simpleMessage = "Internal server error. Please contact support.";
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(simpleMessage);
-    }
+    }*/
 }

@@ -2,11 +2,13 @@ package com.example.authservice.controllers;
 
 
 
-import com.example.authservice.DTOs.JwtResponse;
-import com.example.authservice.DTOs.RegistrationUserDTO;
-import com.example.authservice.DTOs.JwtRequest;
-import com.example.authservice.DTOs.TokenRefreshRequest;
-import com.example.authservice.services.AuthService;
+import com.example.authservice.DTOs.auth.JwtResponse;
+import com.example.authservice.DTOs.auth.RegistrationUserDTO;
+import com.example.authservice.DTOs.auth.JwtRequest;
+import com.example.authservice.DTOs.auth.TokenRefreshRequest;
+import com.example.authservice.DTOs.profile.ProfileDTO;
+import com.example.authservice.services.auth.AuthService;
+import com.example.authservice.services.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,17 +16,25 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/identity")
 public class AuthController {
+
+    private final ProfileService profileService;
+    @GetMapping("/all")
+    public List<ProfileDTO> getAllProfiles() {
+        System.out.println("Мы зашли");
+        return profileService.getAllProfiles();
+    }
+
 
     private final AuthService authService;
     @PostMapping("/auth")

@@ -1,9 +1,9 @@
-package com.example.authservice.services;
+package com.example.authservice.services.auth;
 
 import com.example.authservice.exceptions.TokenRefreshException;
-import com.example.authservice.models.Person;
-import com.example.authservice.models.RefreshToken;
-import com.example.authservice.repositories.RefreshTokenRepository;
+import com.example.authservice.models.auth.Person;
+import com.example.authservice.models.auth.RefreshToken;
+import com.example.authservice.repositories.auth.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

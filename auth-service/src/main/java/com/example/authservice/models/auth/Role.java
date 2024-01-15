@@ -1,4 +1,4 @@
-package com.example.authservice.models;
+package com.example.authservice.models.auth;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

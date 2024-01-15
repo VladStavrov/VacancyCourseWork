@@ -1,4 +1,4 @@
-package com.example.authservice.DTOs;
+package com.example.authservice.DTOs.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class PersonDTO {
         private Long id;
         private String username;
-
 }

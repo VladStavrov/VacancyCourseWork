@@ -1,4 +1,4 @@
-package com.example.treeservice.config;
+package com.example.authservice.configurations;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
