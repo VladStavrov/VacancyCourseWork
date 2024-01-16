@@ -1,18 +1,18 @@
 package com.example.authservice.services.profile;
 
-import com.example.authservice.DTOs.profile.NodeDTO;
+import com.example.authservice.DTOs.profile.WorkExperienceCreateDTO;
 import com.example.authservice.DTOs.profile.WorkExperienceDTO;
+import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.WorkExperience;
 import com.example.authservice.repositories.profile.WorkExperienceRepository;
+import com.example.authservice.services.auth.PersonService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,6 +24,7 @@ public class WorkExperienceService {
     private final WorkExperienceRepository workExperienceRepository;
     private final ModelMapper modelMapper;
     private final NodeService nodeService;
+    private final PersonService personService;
 
     public List<WorkExperienceDTO> getAllWorkExperiences() {
         List<WorkExperience> workExperiences = workExperienceRepository.findAll();
@@ -42,23 +43,19 @@ public class WorkExperienceService {
     }
 
 
-    public WorkExperience createWorkExperience(WorkExperienceDTO createDTO) {
+    public WorkExperience createWorkExperience(WorkExperienceCreateDTO createDTO, String username) {
+        System.out.println(createDTO);
         WorkExperience workExperience = mapDTOToWorkExperience(createDTO);
 
+
+
+        Person person = personService.findByUsername(username);
         Set<Node> primarySkills = nodeService.updateSkills(createDTO.getPrimarySkills());
         Set<Node> secondarySkills = nodeService.updateSkills(createDTO.getSecondarySkills());
 
-
-
-        workExperience.setPrimarySkills(primarySkills);
-        workExperience.setSecondarySkills(secondarySkills);
-
-        primarySkills.forEach(skill->{
-            skill.getPrimarySkillExperiences().add(workExperience);
-        });
-        secondarySkills.forEach(skill->{
-            skill.getSecondarySkillExperiences().add(workExperience);
-        });
+        workExperience.setPrimarySkillsDB(primarySkills);
+        workExperience.setSecondarySkillsDB(secondarySkills);
+        workExperience.setPersonDB(person);
 
         WorkExperience createdWorkExperience = workExperienceRepository.save(workExperience);
         return createdWorkExperience;
@@ -86,37 +83,26 @@ public class WorkExperienceService {
         if (updateDTO.getPrimarySkills() != null) {
             existingWorkExperience.getPrimarySkills().clear();
             Set<Node> primarySkills=nodeService.updateSkills(updateDTO.getPrimarySkills());
-            existingWorkExperience.setPrimarySkills(primarySkills);
+            existingWorkExperience.setPrimarySkillsDB(primarySkills);
         }
         if (updateDTO.getSecondarySkills() != null) {
             existingWorkExperience.getSecondarySkills().clear();
             Set<Node> primarySkills=nodeService.updateSkills(updateDTO.getSecondarySkills());
-            existingWorkExperience.setSecondarySkills(primarySkills);
+            existingWorkExperience.setSecondarySkillsDB(primarySkills);
         }
         WorkExperience updatedWorkExperience = workExperienceRepository.save(existingWorkExperience);
         return mapWorkExperienceToDTO(updatedWorkExperience);
     }
-    public List<WorkExperience> updateWorkExperience(List<WorkExperienceDTO> newWorkExp) {
-        List<WorkExperience> workExperienceList = new ArrayList<>();
-        for (WorkExperienceDTO experienceDTO : newWorkExp) {
-            WorkExperience workExperience;
-            try {
-                if(experienceDTO.getId()!=null){
-                    workExperience = getWorkExperienceById(experienceDTO.getId());
-                }
-               else{
-                    workExperience = createWorkExperience(experienceDTO);
-                }
-            } catch (ResponseStatusException e) {
-                workExperience = createWorkExperience(experienceDTO);
-            }
-            workExperienceList.add(workExperience);
-        }
-        return workExperienceList;
-    }
+
     public void deleteWorkExperience(Long id) {
         WorkExperience workExperience = getWorkExperience(id);
         workExperienceRepository.delete(workExperience);
+    }
+    public List<WorkExperienceDTO> getWorkExperienceByUsername(String username){
+        List<WorkExperience> workExperiences = workExperienceRepository.findAllByPersonUsername(username);
+        return workExperiences.stream()
+                .map(this::mapWorkExperienceToDTO)
+                .collect(Collectors.toList());
     }
     private WorkExperience getWorkExperience(Long id) {
         return workExperienceRepository.findById(id)
@@ -127,6 +113,9 @@ public class WorkExperienceService {
     }
 
     private WorkExperience mapDTOToWorkExperience(WorkExperienceDTO workDTO) {
+        return modelMapper.map(workDTO, WorkExperience.class);
+    }
+    private WorkExperience mapDTOToWorkExperience(WorkExperienceCreateDTO workDTO) {
         return modelMapper.map(workDTO, WorkExperience.class);
     }
 

@@ -14,6 +14,6 @@ public class ProfileDTO {
     private String jobTitle;
     private String about;
     private PersonDTO person;
-    private Set<NodeDTO> knowledge;
-    private List<WorkExperienceDTO> workExperiences;
+    private Set<NodeDTO> language;
+    private Set<NodeDTO> skills;
 }

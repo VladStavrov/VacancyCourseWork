@@ -24,32 +24,32 @@ public class ProfileController {
     private final ProfileService profileService;
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ProfileDTO>> getAllProfiles() {
         List<ProfileDTO> profiles = profileService.getAllProfiles();
         return new ResponseEntity<>(profiles, HttpStatus.OK);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<ProfileDTO> getProfileByUsername(@PathVariable String username) {
+    @GetMapping()
+    public ResponseEntity<ProfileDTO> getProfileByUsername(@RequestHeader("loadedUsername") String username) {
         ProfileDTO profileDTO = profileService.getProfileDTOByUsername(username);
         return new ResponseEntity<>(profileDTO, HttpStatus.OK);
     }
 
-    @PostMapping("/{username}")
-    public ResponseEntity<ProfileDTO> createProfile(@PathVariable String username, @RequestBody ProfileCreateDTO createDTO) {
+    @PostMapping
+    public ResponseEntity<ProfileDTO> createProfile(@RequestHeader("loadedUsername") String username, @RequestBody ProfileCreateDTO createDTO) {
         ProfileDTO createdProfile = profileService.createProfile(createDTO, username);
         return new ResponseEntity<>(createdProfile, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{username}")
-    public ResponseEntity<ProfileDTO> updateProfile(@PathVariable String username, @RequestBody ProfileDTO updateDTO) {
+    @PutMapping
+    public ResponseEntity<ProfileDTO> updateProfile(@RequestHeader("loadedUsername") String username, @RequestBody ProfileDTO updateDTO) {
         ProfileDTO updatedProfile = profileService.updateProfile(username, updateDTO);
         return new ResponseEntity<>(updatedProfile, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{username}")
-    public ResponseEntity<Void> deleteProfile(@PathVariable String username) {
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteProfile(@RequestHeader("loadedUsername") String username) {
         profileService.deleteProfile(username);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

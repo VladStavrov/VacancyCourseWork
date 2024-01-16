@@ -10,6 +10,6 @@ public class ProfileCreateDTO {
     private String lastName;
     private String jobTitle;
     private String about;
-    private Set<NodeDTO> knowledge;
-    private List<WorkExperienceDTO> workExperiences;
+    private Set<NodeDTO> language;
+    private Set<NodeDTO> skills;
 }

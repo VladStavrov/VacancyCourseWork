@@ -24,29 +24,34 @@ public class Node {
     @Column(nullable = false, unique = true)
     private String slug;
 
-    @ManyToMany(mappedBy = "knowledge", cascade = CascadeType.ALL)
-    private Set<Profile> profiles = new HashSet<>();
+    @ManyToMany(mappedBy = "skills", cascade = CascadeType.REFRESH)
+    private Set<Profile> skillsProfils = new HashSet<>();
 
-    @ManyToMany(mappedBy = "primarySkills")
+    @ManyToMany(mappedBy = "language", cascade = CascadeType.REFRESH)
+    private Set<Profile> languageProfiles = new HashSet<>();
+
+    @ManyToMany(mappedBy = "primarySkills", cascade = CascadeType.REFRESH)
     private Set<WorkExperience> primarySkillExperiences = new HashSet<>();
 
-    @ManyToMany(mappedBy = "secondarySkills")
+    @ManyToMany(mappedBy = "secondarySkills", cascade = CascadeType.REFRESH)
     private Set<WorkExperience> secondarySkillExperiences = new HashSet<>();
 
     @PreRemove
     private void removeNodeAssociations() {
-        for(Profile profile : this.profiles){
-            profile.getKnowledge().remove(this);
+        for(Profile profile : this.languageProfiles){
+            profile.getLanguage().remove(this);
+        }
+        for(Profile profile : this.skillsProfils){
+            profile.getSkills().remove(this);
         }
         for (WorkExperience workExperience : this.primarySkillExperiences) {
             workExperience.getPrimarySkills().remove(this);
         }
-        System.out.println("ДО: "+ this.secondarySkillExperiences);
+
         for (WorkExperience workExperience : this.secondarySkillExperiences) {
-            System.out.println("WE: "+workExperience.getSecondarySkills());
             workExperience.getSecondarySkills().remove(this);
         }
-        System.out.println("После: "+ this.secondarySkillExperiences);
+
     }
 
     @Override
@@ -54,12 +59,12 @@ public class Node {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
-        return Objects.equals(id, node.id) && Objects.equals(title, node.title) && Objects.equals(slug, node.slug) && Objects.equals(profiles, node.profiles) && Objects.equals(primarySkillExperiences, node.primarySkillExperiences) && Objects.equals(secondarySkillExperiences, node.secondarySkillExperiences);
+        return Objects.equals(id, node.id) && Objects.equals(title, node.title) && Objects.equals(slug, node.slug) ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(slug); // Где slug - поле, участвующее в вычислении хеш-кода
+        return Objects.hash(slug);
     }
     @Override
     public String toString() {

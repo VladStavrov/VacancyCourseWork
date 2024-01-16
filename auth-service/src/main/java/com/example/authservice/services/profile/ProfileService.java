@@ -1,13 +1,10 @@
 package com.example.authservice.services.profile;
 
-import com.example.authservice.DTOs.profile.NodeDTO;
 import com.example.authservice.DTOs.profile.ProfileCreateDTO;
 import com.example.authservice.DTOs.profile.ProfileDTO;
-import com.example.authservice.DTOs.profile.WorkExperienceDTO;
 import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.Profile;
-import com.example.authservice.models.profile.WorkExperience;
 import com.example.authservice.repositories.profile.ProfileRepository;
 import com.example.authservice.services.auth.PersonService;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,12 +22,17 @@ import java.util.stream.Collectors;
 public class ProfileService {
     private final ProfileRepository profileRepository;
     private final NodeService nodeService;
-    private final WorkExperienceService workExperienceService;
     private final ModelMapper modelMapper;
     private final PersonService personService;
 
     public List<ProfileDTO> getAllProfiles() {
         List<Profile> profiles = profileRepository.findAll();
+        return profiles.stream()
+                .map(this::mapProfileToDTO)
+                .collect(Collectors.toList());
+    }
+    public List<ProfileDTO> getAllProfilesByUsername(String username) {
+        List<Profile> profiles = profileRepository.findAllByPersonUsername(username);
         return profiles.stream()
                 .map(this::mapProfileToDTO)
                 .collect(Collectors.toList());
@@ -47,33 +47,21 @@ public class ProfileService {
     public Profile getProfileByUsername(String username) {
         Profile profile = profileRepository.findByPersonUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Profile not found with username: " + username));
-        ;
         return profile;
     }
 
 
     public ProfileDTO createProfile(ProfileCreateDTO createDTO, String username) {
         Profile profile = mapDTOToProfile(createDTO);
-        List<WorkExperience> workExperienceList = new ArrayList<>();
-        createDTO.getWorkExperiences().forEach(workExperienceDTO -> {
-            workExperienceList.add( workExperienceService.createWorkExperience(workExperienceDTO));
 
-        });
-        Set<Node> knowlegeList = nodeService.updateSkills(createDTO.getKnowledge());
+        Set<Node> language = nodeService.updateSkills(createDTO.getLanguage());
+        Set<Node> skills = nodeService.updateSkills(createDTO.getSkills());
         Person person = personService.findByUsername(username);
 
-        profile.setKnowledge(knowlegeList);
-        knowlegeList.forEach(knowlege->{
-            knowlege.getProfiles().add(profile);
-        });
+        profile.setPersonDB(person);
+        profile.setLanguageDB(language);
+        profile.setSkillsSB(skills);
 
-        profile.setPerson(person);
-        person.setProfile(profile);
-
-        profile.setWorkExperiences(workExperienceList);
-        workExperienceList.forEach(workExperience -> {
-            workExperience.setProfile(profile);
-        });
         Profile createdProfile = profileRepository.save(profile);
         return mapProfileToDTO(createdProfile);
     }
@@ -97,19 +85,18 @@ public class ProfileService {
             existingProfile.setAbout(updateDTO.getAbout());
         }
 
-        if (updateDTO.getKnowledge() != null) {
-            Set<Node> newKnowledge = nodeService.updateSkills(updateDTO.getKnowledge());
-            existingProfile.setKnowledge(newKnowledge);
+        if (updateDTO.getLanguage() != null) {
+            Set<Node> newNodeList = nodeService.updateSkills(updateDTO.getLanguage());
+            existingProfile.setLanguageDB(newNodeList);
         }
-        if (updateDTO.getWorkExperiences() != null) {
-            existingProfile.setWorkExperiences(workExperienceService.updateWorkExperience(updateDTO.getWorkExperiences()));
+        if (updateDTO.getSkills() != null) {
+            Set<Node> newNodeList = nodeService.updateSkills(updateDTO.getSkills());
+            existingProfile.setSkillsSB(newNodeList);
         }
 
         Profile updatedProfile = profileRepository.save(existingProfile);
         return mapProfileToDTO(updatedProfile);
     }
-
-
 
     public void deleteProfile(String username) {
         Profile profile = getProfileByUsername(username);
@@ -119,7 +106,6 @@ public class ProfileService {
     private ProfileDTO mapProfileToDTO(Profile profile) {
         return modelMapper.map(profile, ProfileDTO.class);
     }
-
     private Profile mapDTOToProfile(ProfileDTO profileDTO) {
         return modelMapper.map(profileDTO, Profile.class);
     }

@@ -1,5 +1,6 @@
 package com.example.authservice.controllers;
 
+import com.example.authservice.DTOs.profile.WorkExperienceCreateDTO;
 import com.example.authservice.DTOs.profile.WorkExperienceDTO;
 import com.example.authservice.models.profile.WorkExperience;
 import com.example.authservice.services.profile.WorkExperienceService;
@@ -17,9 +18,14 @@ public class WorkExperienceController {
 
     private final WorkExperienceService workExperienceService;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<WorkExperienceDTO>> getAllWorkExperiences() {
         List<WorkExperienceDTO> workExperiences = workExperienceService.getAllWorkExperiences();
+        return new ResponseEntity<>(workExperiences, HttpStatus.OK);
+    }
+    @GetMapping("/all")
+    public ResponseEntity<List<WorkExperienceDTO>> getAllWorkExperiencesbyUsername(@RequestHeader("loadedUsername") String username) {
+        List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByUsername(username);
         return new ResponseEntity<>(workExperiences, HttpStatus.OK);
     }
 
@@ -29,9 +35,11 @@ public class WorkExperienceController {
         return new ResponseEntity<>(workExperienceDTO, HttpStatus.OK);
     }
 
-    @PostMapping
-    public ResponseEntity<WorkExperienceDTO> createWorkExperience(@RequestBody WorkExperienceDTO createDTO) {
-        WorkExperience createdWorkExperience = workExperienceService.createWorkExperience(createDTO);
+    @PostMapping()
+    public ResponseEntity<WorkExperienceDTO> createNewWorkExperience(@RequestBody WorkExperienceCreateDTO createDTO,
+                                                                     @RequestHeader("loadedUsername") String username) {
+        System.out.println("Зашли");
+        WorkExperience createdWorkExperience = workExperienceService.createWorkExperience(createDTO,username);
         WorkExperienceDTO responseDTO = workExperienceService.mapWorkExperienceToDTO(createdWorkExperience);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }

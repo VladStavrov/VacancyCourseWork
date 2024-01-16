@@ -32,23 +32,45 @@ public class Profile {
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable(
-            name = "profile_knowledges",
+            name = "profile_skills",
             joinColumns = @JoinColumn(name = "profile_id"),
             inverseJoinColumns = @JoinColumn(name = "node_id")
     )
-    private Set<Node> knowledge = new HashSet<>();
+    private Set<Node> skills = new HashSet<>();
 
-    @OneToMany(mappedBy = "profile",cascade = CascadeType.ALL)
-    private List<WorkExperience> workExperiences = new ArrayList<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
+    @JoinTable(
+            name = "profile_language",
+            joinColumns = @JoinColumn(name = "profile_id"),
+            inverseJoinColumns = @JoinColumn(name = "node_id")
+    )
+    private Set<Node> language = new HashSet<>();
+
+    public void setLanguageDB(Set<Node> nodeList){
+            this.language=nodeList;
+            nodeList.forEach(node -> node.getLanguageProfiles().add(this));
+    }
+    public void setSkillsSB(Set<Node> nodeList){
+        this.skills=nodeList;
+        nodeList.forEach(node -> node.getSkillsProfils().add(this));
+    }
+    public void setPersonDB(Person person){
+        this.person=person;
+        person.setProfile(this);
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Profile profile = (Profile) o;
-        return Objects.equals(id, profile.id) && Objects.equals(firstName, profile.firstName) && Objects.equals(lastName, profile.lastName) && Objects.equals(jobTitle, profile.jobTitle) && Objects.equals(about, profile.about) && Objects.equals(person, profile.person) && Objects.equals(knowledge, profile.knowledge) && Objects.equals(workExperiences, profile.workExperiences);
+        return Objects.equals(id, profile.id) && Objects.equals(firstName, profile.firstName) && Objects.equals(lastName, profile.lastName) && Objects.equals(jobTitle, profile.jobTitle) && Objects.equals(about, profile.about) ;
     }
+    @PreRemove
+    private void removeProfileAssociations() {
+       person.setProfile(null);
 
+    }
     @Override
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, jobTitle, about);
@@ -64,4 +86,5 @@ public class Profile {
                 ", about='" + about + '\'' +
                 '}';
     }
+
 }
