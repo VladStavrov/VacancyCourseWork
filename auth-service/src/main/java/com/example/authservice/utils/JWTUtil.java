@@ -19,8 +19,8 @@ import static io.jsonwebtoken.SignatureAlgorithm.HS512;
 @Component
 public class JWTUtil {
     @Value("${jwt.secret}")
-    private  String secret;
-    private final SignatureAlgorithm ALGORITHM = HS512;
+    private  String secret="413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
+
     @Value("${jwt.lifetime}")
     private  Long lifetime;
     public String generateToken(Person person ) throws ServletException {
@@ -37,7 +37,7 @@ public class JWTUtil {
                 .setSubject(person.getUsername())
                 .setIssuedAt(issuedDate)
                 .setExpiration(expiredDate)
-                .signWith(ALGORITHM,secret)
+                .signWith(SignatureAlgorithm.HS256,secret)
                 .compact();
     } catch (Exception e) {
         throw new ServletException("Error creating JWT token", e);

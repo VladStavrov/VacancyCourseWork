@@ -16,18 +16,22 @@ spring:
             uri: lb://authorization-service
             predicates:
               - Path=/api1/**
+            filters:
+              - name: AuthenticationFilter
+
+
 
           - id: auth-server-no-filter
             uri: lb://authorization-service
             predicates:
               - Path=/api/identity/**
 
-         
-      #  - id: auth-server-registration
-      #    uri: lb://authorization-service
-      #    predicates:
-      #      - Path=/identity/registration
-      #    filters:
-      #      - name: AuthenticationFilter
-      #        args:
-      #          requiredRole: ROLE_ADMIN
+
+          #- id: auth-server-registration
+          #  uri: lb://authorization-service
+          #  predicates:
+          #    - Path=/api/identity/registration
+          #  filters:
+          #    - name: AuthenticationFilter
+          #      args:
+          #        requiredRole: ROLE_ADMIN

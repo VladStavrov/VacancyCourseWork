@@ -3,6 +3,7 @@ package com.example.apigateway.utils;
 
 
 import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -17,15 +18,14 @@ import java.util.List;
 @Component
 public class JWTUtil {
 
-    private String secret= "413F4428472B4B6250655368566D5970337336763979244226452948404D6351";
+    @Value("${jwt.secret}")
+    private String secret;
 
     public void validateToken(final String token) {
-        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
-    }
-
-    private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(keyBytes);
+        System.out.println(3.5);
+        Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token);
     }
     public List<String> getRoles(String token){
         return getAllClaimsFromToken(token).get("roles",List.class);
@@ -35,5 +35,8 @@ public class JWTUtil {
                 .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
+    }
+    public String getUsername(String token){
+        return getAllClaimsFromToken(token).getSubject();
     }
     }
