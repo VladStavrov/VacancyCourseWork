@@ -22,7 +22,7 @@ public class NodeEventProducer {
         }
     }
     public void sendNodeDeleteNotification(String slug){
-        ObjectMapper objectMapper = new ObjectMapper();
+
             System.out.println("---------------send : "+slug);
             kafkaTemplate.send("nodeDeleteTopic", slug);
     }
