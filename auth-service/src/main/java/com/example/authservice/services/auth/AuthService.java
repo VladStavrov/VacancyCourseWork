@@ -7,10 +7,12 @@ import com.example.authservice.exceptions.LocalException;
 import com.example.authservice.exceptions.TokenRefreshException;
 import com.example.authservice.models.auth.Person;
 
+
 import com.example.authservice.DTOs.auth.JwtRequest;
 import com.example.authservice.DTOs.auth.JwtResponse;
 import com.example.authservice.models.auth.RefreshToken;
 import com.example.authservice.utils.JWTUtil;
+import jakarta.persistence.Persistence;
 import jakarta.servlet.ServletException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -62,7 +64,7 @@ public class AuthService {
                 .map(user -> {
                     String token = null;
                     try {
-                        token = jwtUtil.generateToken(user);
+                        token = jwtUtil.generateToken((com.example.authservice.models.auth.Person) user);
                     } catch (ServletException e) {
                         throw new RuntimeException(e);
                     }
