@@ -1,5 +1,6 @@
 package com.example.treeservice.kafka.producer;
 
+
 import com.example.treeservice.dto.NodeDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
