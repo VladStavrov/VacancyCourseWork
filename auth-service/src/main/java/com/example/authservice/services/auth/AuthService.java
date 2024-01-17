@@ -43,7 +43,7 @@ public class AuthService {
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(person);
         String token = null;
         try {
-            token = jwtUtil.generateToken(person);
+            token = jwtUtil.generateToken((com.example.authservice.models.auth.Person)person);
         } catch (ServletException e) {
             throw new RuntimeException(e);
         }
