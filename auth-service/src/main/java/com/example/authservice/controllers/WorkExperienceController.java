@@ -23,7 +23,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api1/workexperiences")
-@SecurityRequirement(name = "bearerAuth")
 public class WorkExperienceController {
 
     private final WorkExperienceService workExperienceService;
