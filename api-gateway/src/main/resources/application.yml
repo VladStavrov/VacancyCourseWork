@@ -20,6 +20,11 @@ spring:
               - name: AuthenticationFilter
 
 
+          - id: node-server
+            uri: lb://node-service
+            predicates:
+              - Path=/api/nodes/**
+
 
           - id: auth-server-no-filter
             uri: lb://authorization-service

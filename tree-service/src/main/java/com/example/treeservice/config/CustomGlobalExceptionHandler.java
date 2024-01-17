@@ -30,11 +30,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return ResponseEntity.status(HttpStatus.CONFLICT).body(simpleMessage);
     }
 
-    @ExceptionHandler(Exception.class)
+   /* @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleAllExceptions(Exception ex) {
         logger.error("Unhandled Exception: {}", ex.getClass().getSimpleName());
         String simpleMessage = "Internal server error. Please contact support.";
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(simpleMessage);
-    }
+    }*/
 
 }

@@ -5,14 +5,12 @@ import com.example.treeservice.dto.ApiNodeDto;
 import com.example.treeservice.dto.ApiNodeListDTO;
 import com.example.treeservice.dto.NodeCreateDTO;
 import com.example.treeservice.dto.NodeDTO;
+import com.example.treeservice.kafka.producer.NodeEventProducer;
 import com.example.treeservice.model.Node;
 import com.example.treeservice.repository.NodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -29,8 +27,7 @@ import java.util.stream.Collectors;
 public class NodeService {
     private final String apiRoute="https://api.ch.anto.sh/api/nodes/?page_size=170";
     private final WebClient webClient;
-   // private final String jwtToken="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzA2ODMwOTAxLCJpYXQiOjE3MDQyMzg5MDEsImp0aSI6IjBiYTAzZmRmYzFhNTRjOTNhZjg4ODM0NWQzNDUwMDBjIiwidXNlcl9pZCI6M30.R466RFyXxXmYQljs-piAZCHcY_KKXkGEh_Ot3wWXvhk";
-
+    private final NodeEventProducer nodeEventProducer;
     private final ModelMapper modelMapper;
     private final NodeRepository nodeRepository;
 
@@ -75,12 +72,15 @@ public class NodeService {
             existingNode.setContent(updatedNodeDTO.getContent());
         }
         Node updatedNode = nodeRepository.save(existingNode);
+        NodeDTO nodeDTO = mapNodeToDTO(updatedNode);
+        nodeEventProducer.sendNodeUpdateNotification(nodeDTO);
 
-        return mapNodeToDTO(updatedNode);
+        return nodeDTO;
     }
     public void deleteNode(String slug) {
         Node node = nodeRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
+        nodeEventProducer.sendNodeDeleteNotification(slug);
         nodeRepository.delete(node);
     }
     public NodeDTO mapNodeToDTO(Node node) {
