@@ -28,7 +28,7 @@ public class SwaggerUiConfig {
             List<AbstractSwaggerUiConfigProperties.SwaggerUrl> urls = new LinkedList<>();
             discoveryClient.getServices().forEach(serviceName ->
                     discoveryClient.getInstances(serviceName).forEach(serviceInstance ->
-                            urls.add(new AbstractSwaggerUiConfigProperties.SwaggerUrl( serviceName,"http://5.35.94.201:8765:"+serviceInstance.getPort() + "/v3/api-docs",serviceName))
+                            urls.add(new AbstractSwaggerUiConfigProperties.SwaggerUrl( serviceName,"http://5.35.94.201:"+serviceInstance.getPort() + "/v3/api-docs",serviceName))
                     )
             );
             config.put("urls", urls);
