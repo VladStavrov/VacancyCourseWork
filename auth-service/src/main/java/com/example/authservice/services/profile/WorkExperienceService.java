@@ -25,14 +25,12 @@ public class WorkExperienceService {
     private final ModelMapper modelMapper;
     private final NodeService nodeService;
     private final PersonService personService;
-
     public List<WorkExperienceDTO> getAllWorkExperiences() {
         List<WorkExperience> workExperiences = workExperienceRepository.findAll();
         return workExperiences.stream()
                 .map(this::mapWorkExperienceToDTO)
                 .collect(Collectors.toList());
     }
-
     public WorkExperienceDTO getWorkExperienceDTOById(Long id) {
         WorkExperience workExperience = getWorkExperience(id);
         return mapWorkExperienceToDTO(workExperience);
@@ -41,18 +39,17 @@ public class WorkExperienceService {
         WorkExperience workExperience = getWorkExperience(id);
         return workExperience;
     }
-
-
     public WorkExperience createWorkExperience(WorkExperienceCreateDTO createDTO, String username) {
         System.out.println(createDTO);
         WorkExperience workExperience = mapDTOToWorkExperience(createDTO);
 
-
-
         Person person = personService.findByUsername(username);
-        Set<Node> primarySkills = nodeService.updateSkills(createDTO.getPrimarySkills());
-        Set<Node> secondarySkills = nodeService.updateSkills(createDTO.getSecondarySkills());
-
+        Set<Node> primarySkills = createDTO.getPrimarySkills().stream()
+                .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                .collect(Collectors.toSet());
+        Set<Node> secondarySkills = createDTO.getSecondarySkills().stream()
+                .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                .collect(Collectors.toSet());
         workExperience.setPrimarySkillsDB(primarySkills);
         workExperience.setSecondarySkillsDB(secondarySkills);
         workExperience.setPersonDB(person);
@@ -60,7 +57,6 @@ public class WorkExperienceService {
         WorkExperience createdWorkExperience = workExperienceRepository.save(workExperience);
         return createdWorkExperience;
     }
-
     public WorkExperienceDTO updateWorkExperience(Long id, WorkExperienceDTO updateDTO) {
         WorkExperience existingWorkExperience = workExperienceRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "WorkExperience not found with id: " + id));
@@ -82,12 +78,16 @@ public class WorkExperienceService {
         }
         if (updateDTO.getPrimarySkills() != null) {
             existingWorkExperience.getPrimarySkills().clear();
-            Set<Node> primarySkills=nodeService.updateSkills(updateDTO.getPrimarySkills());
+            Set<Node> primarySkills = updateDTO.getPrimarySkills().stream()
+                    .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                    .collect(Collectors.toSet());
             existingWorkExperience.setPrimarySkillsDB(primarySkills);
         }
         if (updateDTO.getSecondarySkills() != null) {
             existingWorkExperience.getSecondarySkills().clear();
-            Set<Node> primarySkills=nodeService.updateSkills(updateDTO.getSecondarySkills());
+            Set<Node> primarySkills = updateDTO.getSecondarySkills().stream()
+                    .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                    .collect(Collectors.toSet());
             existingWorkExperience.setSecondarySkillsDB(primarySkills);
         }
         WorkExperience updatedWorkExperience = workExperienceRepository.save(existingWorkExperience);

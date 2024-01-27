@@ -1,6 +1,7 @@
 package com.example.authservice.controllers;
 
 
+import com.example.authservice.DTOs.profile.NodeCreateDTO;
 import com.example.authservice.DTOs.profile.NodeDTO;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.services.profile.NodeService;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api1/nodes")
+@RequestMapping("/api/nodes")
 public class NodeController {
 
     private final NodeService nodeService;
@@ -35,12 +36,10 @@ public class NodeController {
     }
 
     @PostMapping
-    public ResponseEntity<NodeDTO> createNode(@RequestBody NodeDTO nodeDTO) {
-        Node createdNode = nodeService.createNode(nodeDTO);
-        NodeDTO responseDTO = nodeService.mapNodeToDTO(createdNode);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    public ResponseEntity<NodeDTO> createNode(@RequestBody NodeCreateDTO nodeDTO) {
+        NodeDTO createdNode = nodeService.createNode(nodeDTO);
+        return new ResponseEntity<>(createdNode, HttpStatus.CREATED);
     }
-
     @PutMapping("/{slug}")
     public ResponseEntity<NodeDTO> updateNode(@PathVariable String slug, @RequestBody NodeDTO updatedNodeDTO) {
         NodeDTO updatedNode = nodeService.updateNode(slug, updatedNodeDTO);

@@ -21,7 +21,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api1/workexperiences")
+@RequestMapping("/api/workexperiences")
 public class WorkExperienceController {
 
     private final WorkExperienceService workExperienceService;

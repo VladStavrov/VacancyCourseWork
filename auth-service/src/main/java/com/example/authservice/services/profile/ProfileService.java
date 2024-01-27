@@ -1,5 +1,6 @@
 package com.example.authservice.services.profile;
 
+import com.example.authservice.DTOs.profile.NodeDTO;
 import com.example.authservice.DTOs.profile.ProfileCreateDTO;
 import com.example.authservice.DTOs.profile.ProfileDTO;
 import com.example.authservice.models.auth.Person;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,8 +56,13 @@ public class ProfileService {
     public ProfileDTO createProfile(ProfileCreateDTO createDTO, String username) {
         Profile profile = mapDTOToProfile(createDTO);
 
-        Set<Node> language = nodeService.updateSkills(createDTO.getLanguage());
-        Set<Node> skills = nodeService.updateSkills(createDTO.getSkills());
+        Set<Node> language = createDTO.getLanguage().stream()
+                .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                .collect(Collectors.toSet());
+        Set<Node> skills = createDTO.getSkills().stream()
+                .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                .collect(Collectors.toSet());
+
         Person person = personService.findByUsername(username);
 
         profile.setPersonDB(person);
@@ -68,11 +75,9 @@ public class ProfileService {
 
     public ProfileDTO updateProfile(String username, ProfileDTO updateDTO) {
         Profile existingProfile = getProfileByUsername(username);
-
         if (updateDTO.getFirstName() != null) {
             existingProfile.setFirstName(updateDTO.getFirstName());
         }
-
         if (updateDTO.getLastName() != null) {
             existingProfile.setLastName(updateDTO.getLastName());
         }
@@ -80,18 +85,20 @@ public class ProfileService {
         if (updateDTO.getJobTitle() != null) {
             existingProfile.setJobTitle(updateDTO.getJobTitle());
         }
-
         if (updateDTO.getAbout() != null) {
             existingProfile.setAbout(updateDTO.getAbout());
         }
-
         if (updateDTO.getLanguage() != null) {
-            Set<Node> newNodeList = nodeService.updateSkills(updateDTO.getLanguage());
-            existingProfile.setLanguageDB(newNodeList);
+            Set<Node> language = updateDTO.getLanguage().stream()
+                    .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                    .collect(Collectors.toSet());
+            existingProfile.setLanguageDB(language);
         }
         if (updateDTO.getSkills() != null) {
-            Set<Node> newNodeList = nodeService.updateSkills(updateDTO.getSkills());
-            existingProfile.setSkillsSB(newNodeList);
+            Set<Node> skills = updateDTO.getSkills().stream()
+                    .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
+                    .collect(Collectors.toSet());
+            existingProfile.setSkillsSB(skills);
         }
 
         Profile updatedProfile = profileRepository.save(existingProfile);

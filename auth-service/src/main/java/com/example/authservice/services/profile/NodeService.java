@@ -42,70 +42,45 @@ public class NodeService {
     public Node getNodeBySlug(String slug) {
         Node node = nodeRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
-
         return node;
     }
-
-
-    public Node createNode(NodeDTO nodeDTO) {
-        NodeCreateDTO nodeCreateDTO = mapDTOToNodeCreateDTO(nodeDTO);
-
-        Node node = mapDTOToNode(nodeCreateDTO);
-
+    public NodeDTO createNode(NodeCreateDTO nodeCreateDTO) {
+        Node node = mapCreateDTOToNode(nodeCreateDTO);
         Node createdNode = nodeRepository.save(node);
-        return createdNode;
+        return mapNodeToDTO(createdNode);
     }
     public NodeDTO updateNode(String slug, NodeDTO updatedNodeDTO) {
         Node existingNode = nodeRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
-
+        if (updatedNodeDTO.getNodeType() != null) {
+            existingNode.setNodeType(updatedNodeDTO.getNodeType());
+        }
         if (updatedNodeDTO.getTitle() != null) {
             existingNode.setTitle(updatedNodeDTO.getTitle());
         }
         if (updatedNodeDTO.getSlug() != null) {
             existingNode.setSlug(updatedNodeDTO.getSlug());
         }
-        Node updatedNode = nodeRepository.save(existingNode);
-
-        return mapNodeToDTO(updatedNode);
-    }
-    public Set<Node> updateSkills(Set<NodeDTO> newSkillDTOs) {
-        Set<Node> nodeList = new HashSet<>();
-        for (NodeDTO skillDTO : newSkillDTOs) {
-            Node skill;
-            try {
-                skill = getNodeBySlug(skillDTO.getSlug());
-            } catch (ResponseStatusException e) {
-                skill = createNode(skillDTO);
-            }
-            nodeList.add(skill);
+        if (updatedNodeDTO.getContent() != null) {
+            existingNode.setContent(updatedNodeDTO.getContent());
         }
-        return nodeList;
+        Node updatedNode = nodeRepository.save(existingNode);
+        NodeDTO nodeDTO = mapNodeToDTO(updatedNode);
+
+
+        return nodeDTO;
     }
+
     @Transactional
     public void deleteNode(String slug) {
         Node node = nodeRepository.findBySlug(slug)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
-
-
         nodeRepository.delete(node);
     }
-   /* @Transactional
-    public void deleteNode(String slug) {
-        Node node = nodeRepository.findBySlug(slug)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Node not found with slug: " + slug));
 
-
-        if (node != null) {
-            // Очистить отношения к primarySkillExperiences и secondarySkillExperiences
-            node.getPrimarySkillExperiences().clear();
-            node.getSecondarySkillExperiences().clear();
-
-            // Сохранить изменения в базе данных
-            nodeRepository.save(node);
-        }
-    }*/
-
+    public Node mapCreateDTOToNode(NodeCreateDTO nodeCreateDTO) {
+        return modelMapper.map(nodeCreateDTO, Node.class);
+    }
 
     public NodeDTO mapNodeToDTO(Node node) {
         return modelMapper.map(node, NodeDTO.class);

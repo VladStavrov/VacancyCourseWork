@@ -1,3 +1,4 @@
+/*
 package com.example.authservice.kafka.consumer;
 
 import com.example.authservice.DTOs.profile.NodeDTO;
@@ -32,4 +33,4 @@ public class NodeEventConsumer {
         System.out.println("update-----------------------------------" +  nodeDTO + " ----------------------------------------------------------------------------");
         nodeService.updateNode(nodeDTO.getSlug(),nodeDTO);
     }
-}
+}*/

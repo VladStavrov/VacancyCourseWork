@@ -9,7 +9,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableKafka
+//@EnableKafka
 @OpenAPIDefinition(info =
 @Info(title = "Employee API", version = "1.0", description = "Documentation Employee API v1.0")
 )
