@@ -60,6 +60,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                         throw new LocalException(HttpStatus.FORBIDDEN, "User does not have the required role");
                     }
                 System.out.println("Мы дошли");
+
                     request=exchange.getRequest()
                             .mutate()
                             .header("loadedUsername",jwtUtil.getUsername(authHeader))
