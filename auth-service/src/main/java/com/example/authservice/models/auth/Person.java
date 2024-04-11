@@ -2,6 +2,7 @@ package com.example.authservice.models.auth;
 
 import com.example.authservice.models.profile.Profile;
 import com.example.authservice.models.profile.WorkExperience;
+import com.example.authservice.models.vacancies.Company;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -38,5 +39,8 @@ public class Person {
 
     @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private Profile profile;
+
+    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Company company;
 
 }
