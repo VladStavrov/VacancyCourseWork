@@ -1,4 +1,4 @@
-package com.example.authservice.DTOs.profile;
+package com.example.authservice.DTOs.profile.node;
 
 import lombok.Data;
 

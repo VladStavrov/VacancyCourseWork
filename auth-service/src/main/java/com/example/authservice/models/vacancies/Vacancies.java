@@ -1,9 +1,6 @@
 package com.example.authservice.models.vacancies;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -12,10 +9,10 @@ public class Vacancies {
     @Id
     @GeneratedValue
     private Long id;
-
     private String title;
+    @ManyToOne(cascade = CascadeType.REFRESH)
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
-
 
     @Embedded
     private Salary salary;

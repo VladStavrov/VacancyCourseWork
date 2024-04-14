@@ -1,6 +1,6 @@
-package com.example.authservice.DTOs.profile;
+package com.example.authservice.DTOs.profile.work;
 
-import com.example.authservice.models.profile.Node;
+import com.example.authservice.DTOs.profile.node.NodeDTO;
 import lombok.Data;
 
 import java.time.LocalDate;

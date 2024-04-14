@@ -1,9 +1,8 @@
 package com.example.authservice.controllers;
 
 
-import com.example.authservice.DTOs.profile.NodeCreateDTO;
-import com.example.authservice.DTOs.profile.NodeDTO;
-import com.example.authservice.models.profile.Node;
+import com.example.authservice.DTOs.profile.node.NodeCreateDTO;
+import com.example.authservice.DTOs.profile.node.NodeDTO;
 import com.example.authservice.services.profile.NodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

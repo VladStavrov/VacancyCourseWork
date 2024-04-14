@@ -1,7 +1,7 @@
 package com.example.authservice.controllers;
 
-import com.example.authservice.DTOs.profile.WorkExperienceCreateDTO;
-import com.example.authservice.DTOs.profile.WorkExperienceDTO;
+import com.example.authservice.DTOs.profile.work.WorkExperienceCreateDTO;
+import com.example.authservice.DTOs.profile.work.WorkExperienceDTO;
 import com.example.authservice.models.profile.WorkExperience;
 import com.example.authservice.services.profile.WorkExperienceService;
 import io.swagger.v3.oas.annotations.Operation;

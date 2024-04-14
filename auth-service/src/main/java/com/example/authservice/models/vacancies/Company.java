@@ -1,8 +1,12 @@
 package com.example.authservice.models.vacancies;
 
 import com.example.authservice.models.auth.Person;
+import com.example.authservice.models.profile.WorkExperience;
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,4 +23,7 @@ public class Company {
     @Id
     @GeneratedValue
     private Long id;
+
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Vacancies> vacancies= new ArrayList<>();
 }

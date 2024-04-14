@@ -1,7 +1,7 @@
 /*
 package com.example.authservice.kafka.consumer;
 
-import com.example.authservice.DTOs.profile.NodeDTO;
+import com.example.authservice.DTOs.profile.node.NodeDTO;
 import com.example.authservice.services.profile.NodeService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

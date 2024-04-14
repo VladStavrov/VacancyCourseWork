@@ -1,7 +1,7 @@
 package com.example.authservice.controllers;
 
-import com.example.authservice.DTOs.profile.ProfileCreateDTO;
-import com.example.authservice.DTOs.profile.ProfileDTO;
+import com.example.authservice.DTOs.profile.profile.ProfileCreateDTO;
+import com.example.authservice.DTOs.profile.profile.ProfileDTO;
 import com.example.authservice.services.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

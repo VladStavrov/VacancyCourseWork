@@ -1,7 +1,8 @@
-package com.example.authservice.DTOs.profile;
+package com.example.authservice.DTOs.profile.profile;
 
+import com.example.authservice.DTOs.profile.node.NodeDTO;
 import lombok.Data;
-import java.util.List;
+
 import java.util.Set;
 
 @Data

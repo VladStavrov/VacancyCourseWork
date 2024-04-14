@@ -1,8 +1,7 @@
 package com.example.authservice.services.profile;
 
-import com.example.authservice.DTOs.profile.NodeDTO;
-import com.example.authservice.DTOs.profile.ProfileCreateDTO;
-import com.example.authservice.DTOs.profile.ProfileDTO;
+import com.example.authservice.DTOs.profile.profile.ProfileCreateDTO;
+import com.example.authservice.DTOs.profile.profile.ProfileDTO;
 import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.Profile;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -1,7 +1,7 @@
 package com.example.authservice.services.profile;
 
-import com.example.authservice.DTOs.profile.WorkExperienceCreateDTO;
-import com.example.authservice.DTOs.profile.WorkExperienceDTO;
+import com.example.authservice.DTOs.profile.work.WorkExperienceCreateDTO;
+import com.example.authservice.DTOs.profile.work.WorkExperienceDTO;
 import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.WorkExperience;
