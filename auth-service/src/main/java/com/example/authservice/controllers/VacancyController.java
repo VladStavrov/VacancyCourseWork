@@ -40,8 +40,8 @@ public class VacancyController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<VacancyDTO> updateVacancy(@PathVariable Long id, @Valid @RequestBody VacancyCreateDTO vacancyCreateDTO) {
-        VacancyDTO updatedVacancy = vacancyService.updateVacancy(id, vacancyCreateDTO);
+    public ResponseEntity<VacancyDTO> updateVacancy(@PathVariable Long id, @Valid @RequestBody VacancyDTO vacancyCreateDTO) {
+        VacancyDTO updatedVacancy = vacancyService.updateVacancy(id,vacancyCreateDTO);
         if (updatedVacancy != null) {
             return ResponseEntity.ok(updatedVacancy);
         } else {

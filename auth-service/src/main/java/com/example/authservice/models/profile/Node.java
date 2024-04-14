@@ -1,6 +1,7 @@
 package com.example.authservice.models.profile;
 
 
+import com.example.authservice.models.vacancies.Vacancies;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -54,6 +55,9 @@ public class Node {
     @ManyToMany(mappedBy = "secondarySkills", cascade = CascadeType.REFRESH)
     private Set<WorkExperience> secondarySkillExperiences = new HashSet<>();
 
+    @ManyToMany(mappedBy = "skils", cascade = CascadeType.REFRESH)
+    private Set<Vacancies> vacanciesSkils = new HashSet<>();
+
     @PreRemove
     private void removeNodeAssociations() {
         for(Profile profile : this.languageProfiles){
@@ -67,6 +71,9 @@ public class Node {
         }
         for (WorkExperience workExperience : this.secondarySkillExperiences) {
             workExperience.getSecondarySkills().remove(this);
+        }
+        for (Vacancies vacancies : this.vacanciesSkils) {
+            vacancies.getSkills().remove(this);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.authservice.DTOs.profile.node;
 
+import com.example.authservice.models.profile.Node;
 import lombok.Data;
 
 @Data
@@ -9,4 +10,11 @@ public class NodeDTO {
     private String title;
     private String slug;
     private String content;
+    public NodeDTO(Node node) {
+        this.id = node.getId();
+        this.nodeType = node.getNodeType();
+        this.title = node.getTitle();
+        this.slug = node.getSlug();
+        this.content = node.getContent();
+    }
 }

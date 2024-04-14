@@ -2,8 +2,10 @@ package com.example.authservice.DTOs.profile.profile;
 
 import com.example.authservice.DTOs.auth.PersonDTO;
 import com.example.authservice.DTOs.profile.node.NodeDTO;
+import com.example.authservice.DTOs.profile.work.WorkExperienceDTO;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -16,4 +18,5 @@ public class ProfileDTO {
     private PersonDTO person;
     private Set<NodeDTO> language;
     private Set<NodeDTO> skills;
+    private List<WorkExperienceDTO> workExperienceDTOList;
 }

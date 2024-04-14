@@ -8,7 +8,6 @@ import java.util.Set;
 
 @Data
 public class WorkExperienceCreateDTO {
-
     private String company;
     private String jobTitle;
     private LocalDate dateStart;
