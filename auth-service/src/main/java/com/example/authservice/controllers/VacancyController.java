@@ -2,6 +2,7 @@ package com.example.authservice.controllers;
 
 import com.example.authservice.DTOs.company.vacancy.VacancyCreateDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyDTO;
+import com.example.authservice.DTOs.company.vacancy.VacancyFilterDTO;
 import com.example.authservice.services.company.VacancyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +24,20 @@ public class VacancyController {
 
     @GetMapping
     public ResponseEntity<List<VacancyDTO>> getAllVacancies() {
-        List<VacancyDTO> vacancies = vacancyService.getAllVacancies();
+        List<VacancyDTO> vacancies = vacancyService.getAllVacanciesDTO();
         return ResponseEntity.ok(vacancies);
+    }
+
+    @PostMapping("/vacancies")
+    public ResponseEntity<List<VacancyDTO>> getFilteredAndSortedVacancies(
+            @RequestBody VacancyFilterDTO filterDTO,
+            @RequestParam(value = "username", required = false) String username
+    ) {
+        List<VacancyDTO> filteredVacancies;
+
+            filteredVacancies = vacancyService.getFilteredAndSortedVacancies(filterDTO, username);
+
+        return new ResponseEntity<>(filteredVacancies, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

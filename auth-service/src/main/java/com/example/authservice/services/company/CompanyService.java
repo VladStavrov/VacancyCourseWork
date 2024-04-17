@@ -30,6 +30,7 @@ public class CompanyService {
         return companies.stream().map(CompanyDTO::new).collect(Collectors.toList());
     }
 
+
     public Company getCompanyById(Long id) {
         return companyRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with id: " + id));
     }

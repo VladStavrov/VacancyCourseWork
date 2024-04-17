@@ -1,9 +1,11 @@
 package com.example.authservice.models.vacancies;
 
 import com.example.authservice.models.profile.Node;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -43,4 +45,13 @@ public class Vacancies {
     private String description;
     private boolean isParsed;
     private String url;
+
+    @Column(nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime creatingTime;
+
+    @PrePersist
+    protected void onCreate() {
+        creatingTime = LocalDateTime.now();
+    }
 }

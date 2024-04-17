@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Data
 public class Company {
+    @Column(unique = true)
     private String companyName;
     @Embedded
     private Location location;
