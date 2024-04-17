@@ -121,7 +121,7 @@ public class VacancyService {
             case PRICE_DESCENDING:
                 List <Vacancies> filteredList =
                 vacancies.stream()
-                        .sorted(Comparator.comparingDouble(vacancy -> vacancy.getSalary().getMinSalary(), Comparator.reverseOrder()))
+                        .sorted(Comparator.comparingDouble(vacancy -> vacancy.getSalary().getMinSalary()))
                         .collect(Collectors.toList());
                 Collections.reverse(filteredList);
                 return filteredList;
