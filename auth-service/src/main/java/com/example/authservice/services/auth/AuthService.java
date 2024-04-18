@@ -40,6 +40,9 @@ public class AuthService {
             throw new LocalException(HttpStatus.UNAUTHORIZED,"Неверный логин или пароль");
         }
         Person person = personService.findByUsername(authRequest.getUsername());
+        if(person.getActivationCode() != null){
+            throw new LocalException(HttpStatus.FORBIDDEN,"Пользователь не активирован");
+        }
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(person);
         String token = null;
         try {
@@ -74,6 +77,9 @@ public class AuthService {
                         "Refresh token is not in database!"));
     }
 
-
+    public PersonDTO activatePerson(String code){
+        Person person = personService.activateUser(code);
+        return new PersonDTO(person.getId(), person.getUsername());
+    }
 
 }

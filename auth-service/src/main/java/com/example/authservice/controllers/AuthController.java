@@ -2,11 +2,9 @@ package com.example.authservice.controllers;
 
 
 
-import com.example.authservice.DTOs.auth.JwtResponse;
-import com.example.authservice.DTOs.auth.RegistrationUserDTO;
-import com.example.authservice.DTOs.auth.JwtRequest;
-import com.example.authservice.DTOs.auth.TokenRefreshRequest;
+import com.example.authservice.DTOs.auth.*;
 import com.example.authservice.DTOs.profile.profile.ProfileDTO;
+import com.example.authservice.models.auth.Person;
 import com.example.authservice.services.auth.AuthService;
 import com.example.authservice.services.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,5 +72,9 @@ public class AuthController {
         return ResponseEntity.ok(authService.refreshToken(request.getRefreshToken()));
 
     }
-
+    @GetMapping("/activate/{code}")
+    public ResponseEntity<?> activate(@PathVariable String code) {
+            PersonDTO person = authService.activatePerson(code);
+            return ResponseEntity.ok(person);
+    }
 }

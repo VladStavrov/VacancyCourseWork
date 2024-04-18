@@ -22,7 +22,7 @@ public class Person {
     @Column(unique = true)
     private String username;
     private String password;
-
+    private String activationCode;
 
     @OneToOne(mappedBy = "person")
     private RefreshToken refreshToken;
