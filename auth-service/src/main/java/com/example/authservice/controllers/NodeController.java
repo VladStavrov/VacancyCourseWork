@@ -50,4 +50,10 @@ public class NodeController {
         nodeService.deleteNode(slug);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/updateApi")
+    public ResponseEntity<?> updateFromApi(@RequestParam("token") String token){
+        nodeService.updateDBFromApi(token);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
 }

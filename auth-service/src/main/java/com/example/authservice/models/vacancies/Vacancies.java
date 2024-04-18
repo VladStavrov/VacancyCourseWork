@@ -38,7 +38,7 @@ public class Vacancies {
 
     public void setSkillsDB(Set<Node> nodeList){
         this.skills=nodeList;
-        nodeList.forEach(node -> node.getVacanciesSkils().add(this));
+        nodeList.forEach(node -> node.getVacanciesSkills().add(this));
     }
 
     private ExperienceLevel experienceLevel;

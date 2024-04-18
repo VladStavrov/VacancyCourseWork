@@ -2,8 +2,10 @@ package com.example.authservice.DTOs.profile.node;
 
 import com.example.authservice.models.profile.Node;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class NodeDTO {
     private Long id;
     private String nodeType;

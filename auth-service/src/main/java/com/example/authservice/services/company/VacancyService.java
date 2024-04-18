@@ -3,6 +3,7 @@ package com.example.authservice.services.company;
 import com.example.authservice.DTOs.company.vacancy.VacancyCreateDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyFilterDTO;
+import com.example.authservice.DTOs.profile.node.NodeDTO;
 import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.Profile;
@@ -139,14 +140,17 @@ public class VacancyService {
     }
 
     private boolean filterByCriteria(Vacancies vacancy, VacancyFilterDTO filterDTO) {
-        // Проверяем каждое поле на пустоту и соответствие критериям
         boolean titleMatch = filterDTO.getTitle() == null || vacancy.getTitle().contains(filterDTO.getTitle());
         boolean minSalaryMatch = filterDTO.getMinSalary() == 0 || vacancy.getSalary() != null && vacancy.getSalary().getMinSalary() >= filterDTO.getMinSalary();
         boolean experienceLevelMatch = filterDTO.getExperienceLevel() == null || vacancy.getExperienceLevel() == filterDTO.getExperienceLevel();
         boolean countryMatch = filterDTO.getCountry() == null || vacancy.getCompany().getLocation().getCountry().equals(filterDTO.getCountry());
         boolean cityMatch = filterDTO.getCity() == null || vacancy.getCompany().getLocation().getCity().equals(filterDTO.getCity());
-
-        return titleMatch && minSalaryMatch && experienceLevelMatch && countryMatch && cityMatch;
+        boolean skillsMatch = true;
+        if (filterDTO.getSkills() != null && !filterDTO.getSkills().isEmpty()) {
+            List<String> vacancySkills = vacancy.getSkills().stream().map(Node::getTitle).collect(Collectors.toList());
+            skillsMatch = vacancySkills.containsAll(filterDTO.getSkills());
+        }
+        return titleMatch && minSalaryMatch && experienceLevelMatch && countryMatch && cityMatch && skillsMatch;
     }
     private VacancyDTO mapVacancyToDTO(Vacancies vacancy) {
         return modelMapper.map(vacancy, VacancyDTO.class);

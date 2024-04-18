@@ -55,8 +55,8 @@ public class Node {
     @ManyToMany(mappedBy = "secondarySkills", cascade = CascadeType.REFRESH)
     private Set<WorkExperience> secondarySkillExperiences = new HashSet<>();
 
-    @ManyToMany(mappedBy = "skils", cascade = CascadeType.REFRESH)
-    private Set<Vacancies> vacanciesSkils = new HashSet<>();
+    @ManyToMany(mappedBy = "skills", cascade = CascadeType.REFRESH)
+    private Set<Vacancies> vacanciesSkills = new HashSet<>();
 
     @PreRemove
     private void removeNodeAssociations() {
@@ -72,7 +72,7 @@ public class Node {
         for (WorkExperience workExperience : this.secondarySkillExperiences) {
             workExperience.getSecondarySkills().remove(this);
         }
-        for (Vacancies vacancies : this.vacanciesSkils) {
+        for (Vacancies vacancies : this.vacanciesSkills) {
             vacancies.getSkills().remove(this);
         }
     }
