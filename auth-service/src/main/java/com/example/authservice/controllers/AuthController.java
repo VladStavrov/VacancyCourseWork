@@ -77,4 +77,9 @@ public class AuthController {
             PersonDTO person = authService.activatePerson(code);
             return ResponseEntity.ok(person);
     }
+    @PostMapping("/activate/send/{username}")
+    public ResponseEntity<String> sendActivationCode(@PathVariable String username) {
+        authService.sendActivationCodeAuth(username);
+        return ResponseEntity.status(HttpStatus.OK).body("Activation code sent successfully");
+    }
 }

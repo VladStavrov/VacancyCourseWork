@@ -38,18 +38,9 @@ public class Profile {
     )
     private Set<Node> skills = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
-    @JoinTable(
-            name = "profile_language",
-            joinColumns = @JoinColumn(name = "profile_id"),
-            inverseJoinColumns = @JoinColumn(name = "node_id")
-    )
-    private Set<Node> language = new HashSet<>();
 
-    public void setLanguageDB(Set<Node> nodeList){
-            this.language=nodeList;
-            nodeList.forEach(node -> node.getLanguageProfiles().add(this));
-    }
+
+
     public void setSkillsSB(Set<Node> nodeList){
         this.skills=nodeList;
         nodeList.forEach(node -> node.getSkillsProfils().add(this));

@@ -26,21 +26,21 @@ public class CompanyController {
         return ResponseEntity.ok(companies);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<CompanyDTO> getCompanyById(@PathVariable Long id) {
-        CompanyDTO company = companyService.getCompanyDTOById(id);
+    @GetMapping("/{username}")
+    public ResponseEntity<CompanyDTO> getCompanyByUsername(@PathVariable String username) {
+        CompanyDTO company = companyService.getCompanyDTOByUsername(username);
         return ResponseEntity.ok(company);
     }
 
     @PostMapping
-    public ResponseEntity<CompanyDTO> createCompany(@Valid @RequestBody CompanyCreateDTO companyCreateDTO, @RequestParam String username) {
+    public ResponseEntity<CompanyDTO> createCompany(@Valid @RequestBody CompanyCreateDTO companyCreateDTO,  @RequestHeader("loadedUsername") String username) {
         CompanyDTO createdCompany = companyService.createCompany(companyCreateDTO, username);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCompany);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<CompanyDTO> updateCompany(@PathVariable Long id, @Valid @RequestBody CompanyCreateDTO companyCreateDTO) {
-        CompanyDTO updatedCompany = companyService.updateCompany(id, companyCreateDTO);
+    @PutMapping()
+    public ResponseEntity<CompanyDTO> updateCompany( @RequestHeader("loadedUsername") String username, @Valid @RequestBody CompanyCreateDTO companyCreateDTO) {
+        CompanyDTO updatedCompany = companyService.updateCompany(username, companyCreateDTO);
         if (updatedCompany != null) {
             return ResponseEntity.ok(updatedCompany);
         } else {
@@ -48,9 +48,9 @@ public class CompanyController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCompany(@PathVariable Long id) {
-        companyService.deleteCompany(id);
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteCompany(@RequestHeader("loadedUsername") String username) {
+        companyService.deleteCompany(username);
         return ResponseEntity.noContent().build();
     }
 }

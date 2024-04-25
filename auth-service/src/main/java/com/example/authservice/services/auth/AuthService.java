@@ -11,6 +11,7 @@ import com.example.authservice.models.auth.Person;
 import com.example.authservice.DTOs.auth.JwtRequest;
 import com.example.authservice.DTOs.auth.JwtResponse;
 import com.example.authservice.models.auth.RefreshToken;
+import com.example.authservice.models.auth.Role;
 import com.example.authservice.utils.JWTUtil;
 import jakarta.persistence.Persistence;
 import jakarta.servlet.ServletException;
@@ -21,6 +22,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -50,7 +54,8 @@ public class AuthService {
         } catch (ServletException e) {
             throw new RuntimeException(e);
         }
-        return new JwtResponse(token,refreshToken.getToken());
+        List <String>  roles=person.getRoles().stream().map(Role::getName).collect(Collectors.toList());
+        return new JwtResponse(token,refreshToken.getToken(),roles);
     }
 
     public PersonDTO createNewPerson(@RequestBody RegistrationUserDTO registrationUserDTO)  {
@@ -59,6 +64,10 @@ public class AuthService {
         }
         Person person = personService.createPerson(registrationUserDTO);
         return new PersonDTO(person.getId(), person.getUsername());
+    }
+    public void sendActivationCodeAuth(String username){
+        Person person = personService.findByUsername(username);
+        personService.sendActivationCode(person);
     }
     public JwtResponse refreshToken(String requestRefreshToken){
         return refreshTokenService.findByToken(requestRefreshToken)
@@ -71,7 +80,8 @@ public class AuthService {
                     } catch (ServletException e) {
                         throw new RuntimeException(e);
                     }
-                    return new JwtResponse(token, requestRefreshToken);
+                    List <String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toList());
+                    return new JwtResponse(token, requestRefreshToken,roles);
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                         "Refresh token is not in database!"));

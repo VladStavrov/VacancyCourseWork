@@ -34,7 +34,15 @@ public class CompanyService {
     public Company getCompanyById(Long id) {
         return companyRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with id: " + id));
     }
+    public Company getCompanyByUsername(String username) {
+        return companyRepository.findByPersonUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with username: " + username));
+    }
 
+    public CompanyDTO getCompanyDTOByUsername(String username) {
+        Company company = getCompanyByUsername(username);
+        return new CompanyDTO(company);
+
+    }
     public CompanyDTO getCompanyDTOById(Long id) {
         Company company = getCompanyById(id);
         return new CompanyDTO(company);
@@ -49,8 +57,8 @@ public class CompanyService {
         return new CompanyDTO(savedCompany);
     }
 
-    public CompanyDTO updateCompany(Long id, CompanyCreateDTO companyCreateDTO) {
-        Company existingCompany = companyRepository.findById(id).orElse(null);
+    public CompanyDTO updateCompany(String username, CompanyCreateDTO companyCreateDTO) {
+        Company existingCompany = getCompanyByUsername(username);
 
         if (existingCompany != null) {
             if (companyCreateDTO.getCompanyName() != null) {
@@ -76,8 +84,9 @@ public class CompanyService {
         return null;
     }
 
-    public void deleteCompany(Long id) {
-        companyRepository.deleteById(id);
+    public void deleteCompany(String username) {
+        Company company = getCompanyByUsername(username);
+        companyRepository.delete(company);
     }
 
     private CompanyDTO mapCompanyToDTO(Company company) {

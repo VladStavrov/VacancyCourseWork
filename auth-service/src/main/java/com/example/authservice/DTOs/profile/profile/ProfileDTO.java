@@ -18,5 +18,4 @@ public class ProfileDTO {
     private PersonDTO person;
     private Set<NodeDTO> language;
     private Set<NodeDTO> skills;
-    private List<WorkExperienceDTO> workExperienceDTOList;
 }

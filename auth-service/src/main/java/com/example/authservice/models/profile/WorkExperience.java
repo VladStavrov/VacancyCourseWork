@@ -24,11 +24,12 @@ public class WorkExperience {
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateStart;
 
-    @Column(nullable = false)
+
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateFinish;
 
-    @Column(nullable = false)
+
+    @Column(nullable = false,columnDefinition = "TEXT")
     private String description;
 
 

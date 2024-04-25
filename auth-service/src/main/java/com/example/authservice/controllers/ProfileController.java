@@ -57,8 +57,8 @@ public class ProfileController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ProfileDTO.class)))
     })
-    @GetMapping()
-    public ResponseEntity<ProfileDTO> getProfileByUsername(@RequestHeader("loadedUsername") String username) {
+    @GetMapping("/{username}")
+    public ResponseEntity<ProfileDTO> getProfileByUsername(@PathVariable String username) {
         ProfileDTO profileDTO = profileService.getProfileDTOByUsername(username);
         return new ResponseEntity<>(profileDTO, HttpStatus.OK);
     }

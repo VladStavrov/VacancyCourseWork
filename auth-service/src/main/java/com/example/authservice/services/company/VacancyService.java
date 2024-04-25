@@ -4,6 +4,7 @@ import com.example.authservice.DTOs.company.vacancy.VacancyCreateDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyFilterDTO;
 import com.example.authservice.DTOs.profile.node.NodeDTO;
+import com.example.authservice.DTOs.profile.work.WorkExperienceDTO;
 import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.Profile;
@@ -35,6 +36,12 @@ public class VacancyService {
     private final PersonService personService;
     public List<VacancyDTO> getAllVacanciesDTO() {
         return getAllVacancies().stream().map(VacancyDTO::new).collect(Collectors.toList());
+    }
+    public List<VacancyDTO> getVacancyByUsername(String username){
+        List<Vacancies> vacancies = vacancyRepository.findALlByCompany_Person_Username(username);
+        return vacancies.stream()
+                .map(VacancyDTO::new)
+                .collect(Collectors.toList());
     }
     public List<Vacancies> getAllVacancies() {
         return vacancyRepository.findAll();

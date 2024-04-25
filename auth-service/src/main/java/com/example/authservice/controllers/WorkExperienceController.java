@@ -58,9 +58,9 @@ public class WorkExperienceController {
                     content = @Content(mediaType = "application/json",
                             array = @ArraySchema(schema = @Schema(implementation = WorkExperienceDTO.class))))
     })
-    @GetMapping("/all")
+    @GetMapping("/all/{username}")
     public ResponseEntity<List<WorkExperienceDTO>> getAllWorkExperiencesbyUsername(
-            @RequestHeader("loadedUsername") String username) {
+            @PathVariable String username) {
         List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByUsername(username);
         return new ResponseEntity<>(workExperiences, HttpStatus.OK);
     }

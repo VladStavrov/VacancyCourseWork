@@ -59,6 +59,9 @@ public class RecommendationEngine {
                 .sum();
     }
     private int calculateExperienceInMonths(LocalDate startDate, LocalDate endDate) {
+        if(endDate == null){
+            endDate = LocalDate.now();
+        }
         return (int) ChronoUnit.MONTHS.between(startDate, endDate);
     }
     private double calculateExperienceMatchingPercentage(int requiredExperience, int ourFullExperience) {

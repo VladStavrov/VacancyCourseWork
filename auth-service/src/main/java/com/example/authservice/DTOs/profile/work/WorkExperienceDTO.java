@@ -17,5 +17,4 @@ public class WorkExperienceDTO {
     private String description;
     private Set<NodeDTO> primarySkills;
     private Set<NodeDTO> secondarySkills;
-    private Long profileId;
 }

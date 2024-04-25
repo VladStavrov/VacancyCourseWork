@@ -42,15 +42,9 @@ public class PersonService implements UserDetailsService {
                 person.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList())
         );
     }
-    public Person createPerson(RegistrationUserDTO registrationUserDTO) {
-        if(personRepository.findByUsername(registrationUserDTO.getUsername()).isPresent()){
-            throw new LocalException(HttpStatus.BAD_REQUEST,"Такой пользователь уже существует");
-        }
-        Person person = new Person();
-        person.setPassword(passwordEncoder.encode(registrationUserDTO.getPassword()));
-        person.setUsername(registrationUserDTO.getUsername());
-        person.setRoles(List.of(roleService.getUserRole(),roleService.getAdminRole()));
-        person.setActivationCode(UUID.randomUUID().toString());
+    public void sendActivationCode(Person person){
+        String activationCode = UUID.randomUUID().toString();
+        person.setActivationCode(activationCode);
         String message = String.format(
                 "<!DOCTYPE html>\n" +
                         "<html lang=\"en\">\n" +
@@ -102,10 +96,22 @@ public class PersonService implements UserDetailsService {
                         "</body>\n" +
                         "</html>",
                 person.getUsername(),
-                person.getActivationCode()
+               activationCode
         );
 
         mailService.send(person.getUsername(), "Activation code", message);
+    }
+
+    public Person createPerson(RegistrationUserDTO registrationUserDTO) {
+        if(personRepository.findByUsername(registrationUserDTO.getUsername()).isPresent()){
+            throw new LocalException(HttpStatus.BAD_REQUEST,"Такой пользователь уже существует");
+        }
+        Person person = new Person();
+        person.setPassword(passwordEncoder.encode(registrationUserDTO.getPassword()));
+        person.setUsername(registrationUserDTO.getUsername());
+        person.setRoles(List.of(roleService.getUserRole(),roleService.getAdminRole()));
+        sendActivationCode(person);
+
         return personRepository.save(person);
     }
 

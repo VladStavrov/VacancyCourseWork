@@ -54,9 +54,7 @@ public class ProfileService {
     public ProfileDTO createProfile(ProfileCreateDTO createDTO, String username) {
         Profile profile = mapDTOToProfile(createDTO);
 
-        Set<Node> language = createDTO.getLanguage().stream()
-                .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
-                .collect(Collectors.toSet());
+
         Set<Node> skills = createDTO.getSkills().stream()
                 .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
                 .collect(Collectors.toSet());
@@ -64,7 +62,7 @@ public class ProfileService {
         Person person = personService.findByUsername(username);
 
         profile.setPersonDB(person);
-        profile.setLanguageDB(language);
+
         profile.setSkillsSB(skills);
 
         Profile createdProfile = profileRepository.save(profile);
@@ -86,12 +84,7 @@ public class ProfileService {
         if (updateDTO.getAbout() != null) {
             existingProfile.setAbout(updateDTO.getAbout());
         }
-        if (updateDTO.getLanguage() != null) {
-            Set<Node> language = updateDTO.getLanguage().stream()
-                    .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))
-                    .collect(Collectors.toSet());
-            existingProfile.setLanguageDB(language);
-        }
+
         if (updateDTO.getSkills() != null) {
             Set<Node> skills = updateDTO.getSkills().stream()
                     .map(nodeDTO -> nodeService.getNodeBySlug(nodeDTO.getSlug()))

@@ -3,6 +3,7 @@ package com.example.authservice.controllers;
 import com.example.authservice.DTOs.company.vacancy.VacancyCreateDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyFilterDTO;
+import com.example.authservice.DTOs.profile.work.WorkExperienceDTO;
 import com.example.authservice.services.company.VacancyService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,12 @@ public class VacancyController {
         List<VacancyDTO> vacancies = vacancyService.getAllVacanciesDTO();
         return ResponseEntity.ok(vacancies);
     }
-
+    @GetMapping("/all/{username}")
+    public ResponseEntity<List<VacancyDTO>> getAllVacanciesByUsername(
+            @PathVariable String username) {
+        List<VacancyDTO> vacancyDTOS = vacancyService.getVacancyByUsername(username);
+        return new ResponseEntity<>(vacancyDTOS, HttpStatus.OK);
+    }
     @PostMapping("/vacancies")
     public ResponseEntity<List<VacancyDTO>> getFilteredAndSortedVacancies(
             @RequestBody VacancyFilterDTO filterDTO,
