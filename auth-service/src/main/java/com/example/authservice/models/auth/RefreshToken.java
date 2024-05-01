@@ -3,12 +3,16 @@ package com.example.authservice.models.auth;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 
 @Entity(name = "refreshtoken")
 @Data
+@ToString(exclude = {"person"})
+@EqualsAndHashCode(exclude = "person")
 public class RefreshToken {
     @jakarta.persistence.Id
     @Id

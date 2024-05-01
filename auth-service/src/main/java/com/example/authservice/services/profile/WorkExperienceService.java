@@ -53,7 +53,6 @@ public class WorkExperienceService {
         workExperience.setPrimarySkillsDB(primarySkills);
         workExperience.setSecondarySkillsDB(secondarySkills);
         workExperience.setPersonDB(person);
-
         WorkExperience createdWorkExperience = workExperienceRepository.save(workExperience);
         return createdWorkExperience;
     }

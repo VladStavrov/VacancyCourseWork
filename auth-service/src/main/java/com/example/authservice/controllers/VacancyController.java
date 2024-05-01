@@ -52,9 +52,9 @@ public class VacancyController {
         return ResponseEntity.ok(vacancy);
     }
 
-    @PostMapping
-    public ResponseEntity<VacancyDTO> createVacancy(@Valid @RequestBody VacancyCreateDTO vacancyCreateDTO) {
-        VacancyDTO createdVacancy = vacancyService.createVacancy(vacancyCreateDTO);
+    @PostMapping("/{id}")
+    public ResponseEntity<VacancyDTO> createVacancy(@PathVariable Long id,@Valid @RequestBody VacancyCreateDTO vacancyCreateDTO) {
+        VacancyDTO createdVacancy = vacancyService.createVacancy(vacancyCreateDTO, id);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdVacancy);
     }
 
@@ -70,6 +70,7 @@ public class VacancyController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVacancy(@PathVariable Long id) {
+
         vacancyService.deleteVacancy(id);
         return ResponseEntity.noContent().build();
     }

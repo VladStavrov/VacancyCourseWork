@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,8 +18,9 @@ public class Vacancies {
     @Id
     @GeneratedValue
     private Long id;
+
     private String title;
-    @ManyToOne(cascade = CascadeType.REFRESH)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
@@ -27,6 +29,10 @@ public class Vacancies {
 
     @Embedded
     private Salary salary;
+    public void setCompanyDB(Company company){
+        company.getVacancies().add(this);
+        this.company=company;
+    }
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE,CascadeType.REFRESH})
     @JoinTable(
@@ -35,6 +41,7 @@ public class Vacancies {
             inverseJoinColumns = @JoinColumn(name = "node_id")
     )
     private Set<Node> skills = new HashSet<>();
+
 
     public void setSkillsDB(Set<Node> nodeList){
         this.skills=nodeList;
@@ -47,11 +54,11 @@ public class Vacancies {
     private String url;
 
     @Column(nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime creatingTime;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate creatingTime;
 
     @PrePersist
     protected void onCreate() {
-        creatingTime = LocalDateTime.now();
+        creatingTime = LocalDate.now();
     }
 }

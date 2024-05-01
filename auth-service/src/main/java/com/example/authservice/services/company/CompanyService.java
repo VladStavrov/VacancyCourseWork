@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -84,9 +85,13 @@ public class CompanyService {
         return null;
     }
 
+    @Transactional
     public void deleteCompany(String username) {
         Company company = getCompanyByUsername(username);
-        companyRepository.delete(company);
+        Person person = company.getPerson();
+        person.setCompany(null);
+        System.out.println(company.getCompanyName());
+        companyRepository.deleteById(company.getId());
     }
 
     private CompanyDTO mapCompanyToDTO(Company company) {

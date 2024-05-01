@@ -4,12 +4,15 @@ import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.WorkExperience;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
+@EqualsAndHashCode(of = {"companyName","id"})
 public class Company {
     @Column(unique = true)
     private String companyName;
@@ -25,6 +28,7 @@ public class Company {
     @GeneratedValue
     private Long id;
 
-    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "company",cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Vacancies> vacancies= new ArrayList<>();
+
 }

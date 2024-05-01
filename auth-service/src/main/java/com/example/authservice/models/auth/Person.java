@@ -6,6 +6,8 @@ import com.example.authservice.models.vacancies.Company;
 import com.example.authservice.models.vacancies.Response;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +16,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "person")
+@EqualsAndHashCode(of = {"username"})
 public class Person {
 
     @Id
