@@ -1,5 +1,6 @@
 package com.example.authservice.services.company;
 
+import com.example.authservice.DTOs.company.response.ResponseCreateDTO;
 import com.example.authservice.DTOs.company.response.ResponseDTO;
 import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.vacancies.Company;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,44 +33,46 @@ public class ResponseService {
     }
     public ResponseDTO getResposeDTOById(Long id){
         Response response = getResponseById(id);
-        return mapResponseToDTO(response);
+        return new ResponseDTO(response);
     }
     public List<ResponseDTO> getAllResponsesByVacancyId(Long vacancyId) {
-
         List<Response> responses = responseRepository.findAllByVacancyId(vacancyId);
-
         return responses.stream()
-                .map(this::mapResponseToDTO)
-                .collect(Collectors.toList());
+                .map(ResponseDTO::new)
+                   .collect(Collectors.toList());
     }
-
     public List<ResponseDTO> getAllResponsesByUsername(String username) {
-
         List<Response> responses = responseRepository.findAllByPersonUsername(username);
-
         return responses.stream()
-                .map(this::mapResponseToDTO)
+                .map(ResponseDTO::new)
                 .collect(Collectors.toList());
     }
-    public ResponseDTO createResponse(ResponseDTO responseDTO) {
+    public List<ResponseDTO> getAllResponsesByCompanyName(String username) {
+        List<Response> responses = responseRepository.findAllByVacancyCompanyPersonUsername(username);
+        return responses.stream()
+                .map(ResponseDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public ResponseDTO createResponse(ResponseCreateDTO responseDTO) {
+        Optional<Response> responseTest = responseRepository.findByPersonUsernameAndVacancyId(responseDTO.getUsername(),responseDTO.getVacancyId());
+        if(responseTest.isPresent()){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Company with this username and id is present: ");
+        }
         Person person = personService.findByUsername(responseDTO.getUsername());
         Vacancies vacancy = vacancyService.getVacancyById(responseDTO.getVacancyId());
-
         Response response = new Response();
         response.setPerson(person);
         response.setVacancy(vacancy);
         response.setStatus(responseDTO.getStatus());
-
         Response savedResponse = responseRepository.save(response);
-
-        return mapResponseToDTO(savedResponse);
+        return new ResponseDTO(savedResponse);
     }
-
     public ResponseDTO updateResponseStatus(Long responseId, String newStatus) {
         Response response = getResponseById(responseId);
         response.setStatus(newStatus);
         Response updatedResponse = responseRepository.save(response);
-        return mapResponseToDTO(updatedResponse);
+        return new ResponseDTO(updatedResponse);
     }
 
     @Transactional
@@ -76,12 +80,5 @@ public class ResponseService {
         responseRepository.deleteById(id);
     }
 
-    private ResponseDTO mapResponseToDTO(Response response) {
-        ResponseDTO responseDTO = new ResponseDTO();
-        responseDTO.setId(response.getId());
-        responseDTO.setUsername(response.getPerson().getUsername());
-        responseDTO.setVacancyId(response.getVacancy().getId());
-        responseDTO.setStatus(response.getStatus());
-        return responseDTO;
-    }
+
 }

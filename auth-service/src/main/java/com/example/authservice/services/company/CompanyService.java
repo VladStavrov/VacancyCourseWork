@@ -38,6 +38,16 @@ public class CompanyService {
     public Company getCompanyByUsername(String username) {
         return companyRepository.findByPersonUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with username: " + username));
     }
+    public Company getCompanyByCompanyName(String companyName) {
+        System.out.println("Company: "+companyName);
+        return companyRepository.findByCompanyName(companyName).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with companyName: " + companyName));
+    }
+
+    public CompanyDTO getCompanyDTOByCompanyName(String companyName) {
+        Company company = getCompanyByCompanyName(companyName);
+        return new CompanyDTO(company);
+
+    }
 
     public CompanyDTO getCompanyDTOByUsername(String username) {
         Company company = getCompanyByUsername(username);

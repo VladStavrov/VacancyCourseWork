@@ -3,9 +3,6 @@ package com.example.authservice.services.company;
 import com.example.authservice.DTOs.company.vacancy.VacancyCreateDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyFilterDTO;
-import com.example.authservice.DTOs.profile.node.NodeDTO;
-import com.example.authservice.DTOs.profile.work.WorkExperienceDTO;
-import com.example.authservice.models.auth.Person;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.Profile;
 import com.example.authservice.models.profile.WorkExperience;
@@ -15,6 +12,8 @@ import com.example.authservice.models.vacancies.Vacancies;
 import com.example.authservice.repositories.company.VacancyRepository;
 import com.example.authservice.services.auth.PersonService;
 import com.example.authservice.services.profile.NodeService;
+import com.example.authservice.services.profile.ProfileService;
+import com.example.authservice.services.profile.WorkExperienceService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -35,6 +34,8 @@ public class VacancyService {
     private final ModelMapper modelMapper;
     private final NodeService nodeService;
     private final PersonService personService;
+    private final ProfileService profileService;
+    private final WorkExperienceService workExperienceService;
     public List<VacancyDTO> getAllVacanciesDTO() {
         return getAllVacancies().stream().map(VacancyDTO::new).collect(Collectors.toList());
     }
@@ -113,8 +114,7 @@ public class VacancyService {
         if (filterDTOIsEmpty(filterDTO)) {
             sortedVacancies = allVacancies;
         } else {
-
-            sortedVacancies = sortVacancies(allVacancies, filterDTO.getSortType());
+            sortedVacancies = sortVacancies(allVacancies, filterDTO.getSortType(),username);
         }
 
         return sortedVacancies.stream()
@@ -134,7 +134,7 @@ public class VacancyService {
                         (filterDTO.getSkills() == null || filterDTO.getSkills().isEmpty()));
     }
 
-    private List<Vacancies> sortVacancies(List<Vacancies> vacancies, SortType sortType) {
+    private List<Vacancies> sortVacancies(List<Vacancies> vacancies, SortType sortType,String username) {
         if(sortType == null){
             return vacancies;
         }
@@ -157,6 +157,26 @@ public class VacancyService {
                 return vacancies.stream()
                         .sorted(Comparator.comparing(Vacancies::getCreatingTime).reversed())
                         .collect(Collectors.toList());
+            case RECOMMENDATIONS:{
+                if(username!=null){
+                    try{
+                        RecommendationEngine recommendationEngine = new RecommendationEngine();
+                        Profile profile = profileService.getProfileByUsername(username);
+                        List<WorkExperience> workExperiences = workExperienceService.getWorkExperienceByUsername(username);
+                       return recommendationEngine.sortVacanciesByRecommended(profile,workExperiences,vacancies);
+                    }
+                    catch (Exception e){
+                        return vacancies;
+                    }
+
+
+                }else {
+                    return vacancies;
+                }
+
+
+            }
+
             default:
                 return vacancies;
         }

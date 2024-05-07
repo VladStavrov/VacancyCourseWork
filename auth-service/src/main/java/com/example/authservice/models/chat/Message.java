@@ -1,4 +1,5 @@
-package com.example.authservice.models.vacancies;
+package com.example.authservice.models.chat;
+
 
 import com.example.authservice.models.auth.Person;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -6,32 +7,33 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Data
-public class Response {
-
+public class Message {
     @Id
     @GeneratedValue
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "person_id",nullable = false)
+    @ManyToOne(cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "chat_id", nullable = false)
+    private Chat chat;
+
+    @ManyToOne(cascade = {CascadeType.REFRESH})
+    @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH}, fetch = FetchType.EAGER)
-    @JoinColumn(name = "vacancy_id",nullable = false)
-    private Vacancies vacancy;
+    @Column(columnDefinition = "TEXT")
+    private String message;
 
-    private String status;
 
     @Column(nullable = false)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime creatingTime;
 
     @PrePersist
     protected void onCreate() {
         creatingTime = LocalDateTime.now();
     }
-
 }

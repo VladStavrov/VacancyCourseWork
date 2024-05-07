@@ -61,7 +61,7 @@ public class WorkExperienceController {
     @GetMapping("/all/{username}")
     public ResponseEntity<List<WorkExperienceDTO>> getAllWorkExperiencesbyUsername(
             @PathVariable String username) {
-        List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByUsername(username);
+        List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceDTOByUsername(username);
         return new ResponseEntity<>(workExperiences, HttpStatus.OK);
     }
 

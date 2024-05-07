@@ -30,7 +30,8 @@ public class PersonService implements UserDetailsService {
     private final MailService mailService;
 
     public Person findByUsername(String username) {
-        return personRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(("User with this id not found")));
+        Person person = personRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(("User with this id not found")));
+            return person;
     }
     @Override
     @Transactional

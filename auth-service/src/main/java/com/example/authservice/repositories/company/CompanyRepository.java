@@ -12,4 +12,5 @@ import java.util.Optional;
 @RepositoryRestResource(exported = false)
 public interface CompanyRepository extends JpaRepository<Company,Long> {
     Optional<Company> findByPersonUsername(String username);
+    Optional<Company> findByCompanyName(String companyName);
 }

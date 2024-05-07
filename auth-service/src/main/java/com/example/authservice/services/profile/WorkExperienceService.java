@@ -97,8 +97,13 @@ public class WorkExperienceService {
         WorkExperience workExperience = getWorkExperience(id);
         workExperienceRepository.delete(workExperience);
     }
-    public List<WorkExperienceDTO> getWorkExperienceByUsername(String username){
-        List<WorkExperience> workExperiences = workExperienceRepository.findAllByPersonUsername(username);
+
+    public List<WorkExperience> getWorkExperienceByUsername(String username){
+        return   workExperienceRepository.findAllByPersonUsername(username);
+
+    }
+    public List<WorkExperienceDTO> getWorkExperienceDTOByUsername(String username){
+        List<WorkExperience> workExperiences = getWorkExperienceByUsername(username);
         return workExperiences.stream()
                 .map(this::mapWorkExperienceToDTO)
                 .collect(Collectors.toList());

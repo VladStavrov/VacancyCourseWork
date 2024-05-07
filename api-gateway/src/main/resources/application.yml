@@ -4,16 +4,16 @@ springdoc:
 spring:
   cloud:
     gateway:
-      #globalcors:
-      #  corsConfigurations:
-      #    '[/**]':
-      #      allowedOrigins: "http://localhost:4200"
-      #      allowedHeaders: "*"
-      #      allowedMethods:
-      #        - GET
-      #        - POST
-      #        - DELETE
-      #        - PUT
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedHeaders: "*"
+            allowedMethods:
+              - GET
+              - POST
+              - DELETE
+              - PUT
       routes:
 
 
@@ -27,7 +27,7 @@ spring:
           - id: main-server-no-filter
             uri: lb://main-service
             predicates:
-              - Path=/api/identity/**,/api/nodes/**,/chating/**
+              - Path=/api/identity/**,/api/nodes/**,/chating/**,/api/chats/**,/api/messages/**,/api/companies/name/**
 
 
           - id: main-server

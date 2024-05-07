@@ -31,6 +31,11 @@ public class CompanyController {
         CompanyDTO company = companyService.getCompanyDTOByUsername(username);
         return ResponseEntity.ok(company);
     }
+    @GetMapping("/name/{companyName}")
+    public ResponseEntity<CompanyDTO> getCompanyByCompanyName(@PathVariable String companyName) {
+        CompanyDTO company = companyService.getCompanyDTOByCompanyName(companyName);
+        return ResponseEntity.ok(company);
+    }
 
     @PostMapping
     public ResponseEntity<CompanyDTO> createCompany(@Valid @RequestBody CompanyCreateDTO companyCreateDTO,  @RequestHeader("loadedUsername") String username) {

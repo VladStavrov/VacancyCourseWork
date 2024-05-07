@@ -18,7 +18,7 @@ public class RecommendationEngine {
     private static final double SKILLS_WEIGHT = 0.8;
 
     public List<Vacancies> sortVacanciesByRecommended(Profile profile, List<WorkExperience> workExperiences, List<Vacancies> vacancies) {
-        List<Map.Entry<Vacancies, Double>> vacancyMatchingList = new ArrayList<>();
+        List<Map.Entry<Vacancies, Double>  > vacancyMatchingList = new ArrayList<>();
         for (Vacancies vacancy : vacancies) {
             double vacancyMatchingPercentage = calculateVacancyMatchingPercentage(profile, workExperiences, vacancy);
             vacancyMatchingList.add(Map.entry(vacancy, vacancyMatchingPercentage));
