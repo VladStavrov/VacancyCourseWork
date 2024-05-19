@@ -48,16 +48,19 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 jwtUtil.validateToken(authHeader);
                 System.out.println(4);
                 String requiredRole = config.requiredRole;
-                if(requiredRole==null){
-                    requiredRole=DEFAULT_REQUIRED_ROLE;
-                }
-
+                System.out.println("ROle: "+requiredRole);
+                if(requiredRole!=null){
                     List<String> roles = jwtUtil.getRoles(authHeader);
-                System.out.println("roles: "+roles);
+
+                    System.out.println("roles: "+roles);
                     if (!isValidRole(roles,requiredRole)) {
 
                         throw new LocalException(HttpStatus.FORBIDDEN, "User does not have the required role");
                     }
+                }
+
+
+
                 System.out.println("Мы дошли");
 
                     request=exchange.getRequest()
@@ -74,7 +77,6 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     }
 
     private boolean isValidRole(List<String> roles,String requiredRole) {
-
         return roles.contains(requiredRole);
     }
 

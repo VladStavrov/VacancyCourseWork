@@ -6,6 +6,7 @@ import com.example.authservice.DTOs.auth.*;
 import com.example.authservice.DTOs.profile.profile.ProfileDTO;
 import com.example.authservice.models.auth.Person;
 import com.example.authservice.services.auth.AuthService;
+import com.example.authservice.services.auth.PersonService;
 import com.example.authservice.services.profile.ProfileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -34,6 +35,7 @@ public class AuthController {
 
 
     private final AuthService authService;
+    private final PersonService personService;
     @PostMapping("/auth")
     @Operation(summary = "Authentication", description = "Authentication on the site")
     @ApiResponses(value = {
@@ -78,8 +80,20 @@ public class AuthController {
             return ResponseEntity.ok(person);
     }
     @PostMapping("/activate/send/{username}")
-    public ResponseEntity<String> sendActivationCode(@PathVariable String username) {
+    public ResponseEntity<Void> sendActivationCode(@PathVariable String username) {
         authService.sendActivationCodeAuth(username);
-        return ResponseEntity.status(HttpStatus.OK).body("Activation code sent successfully");
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @GetMapping("/password/send/{username}")
+    public ResponseEntity<Void> sendPasswordCode(@PathVariable String username) {
+        authService.sendPasswordCodeAuth(username);
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+    @PostMapping("/password/change/{code}")
+    public ResponseEntity<Void> changePassword(@PathVariable String code, @RequestBody ChangePasswordDTO newPassword) {
+        personService.changePassword(code, newPassword.getNewPassword());
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }

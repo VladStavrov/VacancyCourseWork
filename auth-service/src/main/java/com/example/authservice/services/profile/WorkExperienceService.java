@@ -40,7 +40,7 @@ public class WorkExperienceService {
         return workExperience;
     }
     public WorkExperience createWorkExperience(WorkExperienceCreateDTO createDTO, String username) {
-        System.out.println(createDTO);
+
         WorkExperience workExperience = mapDTOToWorkExperience(createDTO);
 
         Person person = personService.findByUsername(username);

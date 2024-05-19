@@ -18,6 +18,7 @@ public class Company {
     private String companyName;
     @Embedded
     private Location location;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String email;
     private String phoneNumber;

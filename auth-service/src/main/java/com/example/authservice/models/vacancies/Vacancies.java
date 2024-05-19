@@ -49,6 +49,7 @@ public class Vacancies {
     }
 
     private ExperienceLevel experienceLevel;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private boolean isParsed;
     private String url;

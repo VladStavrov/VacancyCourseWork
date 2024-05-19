@@ -12,22 +12,19 @@ import org.springframework.web.bind.annotation.*;
 
 
 import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/companies")
 public class CompanyController {
-
     private final CompanyService companyService;
-
     @GetMapping
     public ResponseEntity<List<CompanyDTO>> getAllCompanies() {
         List<CompanyDTO> companies = companyService.getAllCompanies();
         return ResponseEntity.ok(companies);
     }
-
     @GetMapping("/{username}")
     public ResponseEntity<CompanyDTO> getCompanyByUsername(@PathVariable String username) {
+        System.out.println("Йоу-йок");
         CompanyDTO company = companyService.getCompanyDTOByUsername(username);
         return ResponseEntity.ok(company);
     }

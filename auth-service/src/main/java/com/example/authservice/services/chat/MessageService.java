@@ -1,5 +1,4 @@
 package com.example.authservice.services.chat;
-
 import com.example.authservice.DTOs.chat.MessageCreateDTO;
 import com.example.authservice.DTOs.chat.MessageDTO;
 import com.example.authservice.models.auth.Person;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 @Service
 public class MessageService {
@@ -22,18 +20,12 @@ public class MessageService {
     private final PersonService personService;
     public MessageDTO createMessage(MessageCreateDTO messageCreateDTO, Long chatId ) {
         Chat chat = chatService.getChatByIdReal(chatId);
-
         Message message = new Message();
         message.setChat(chat);
         Person person = personService.findByUsername(messageCreateDTO.getUsername());
         message.setPerson(person);
         message.setMessage(messageCreateDTO.getMessage());
-        System.out.println("chatId "+chat.getId());
-        System.out.println("message "+chat.getId());
-        System.out.println("chatId "+chat.getId());
-
         message = messageRepository.save(message);
-
         return new MessageDTO(message);
     }
     public List<MessageDTO> getAllMessagesByChatId(Long chatId) {

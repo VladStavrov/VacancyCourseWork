@@ -24,11 +24,33 @@ spring:
           #  filters:
           #   - RewritePath=/chating/chat-socket/(?<segment>.*), /$\\{segment}
 
+
+
+          - id: company
+            uri: lb://main-service
+            predicates:
+              - Path=/api/companies/**
+              - Method=PUT,POST,DELETE
+            filters:
+              - name: AuthenticationFilter
+                args:
+                  requiredRole: ROLE_COMPANY
+
+          - id: profile
+            uri: lb://main-service
+
+            predicates:
+              - Path=/api/profiles/**,/api/workexperiences/**
+              - Method=PUT,POST,DELETE
+            filters:
+              - name: AuthenticationFilter
+                args:
+                  requiredRole: ROLE_USER
+
           - id: main-server-no-filter
             uri: lb://main-service
             predicates:
-              - Path=/api/identity/**,/api/nodes/**,/chating/**,/api/chats/**,/api/messages/**,/api/companies/name/**
-
+              - Path=/api/identity/**,/api/nodes/**,/api/companies/name/**,/api/vacancies/**,/chating/**, /api/profiles/**,/api/workexperiences/**
 
           - id: main-server
             uri: lb://main-service

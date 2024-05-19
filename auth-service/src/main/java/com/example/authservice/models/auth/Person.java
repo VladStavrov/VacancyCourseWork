@@ -27,6 +27,7 @@ public class Person {
     private String username;
     private String password;
     private String activationCode;
+    private String passwordCode;
 
     @OneToOne(mappedBy = "person")
     private RefreshToken refreshToken;

@@ -37,7 +37,6 @@ public class AuthService {
     private final RefreshTokenService refreshTokenService;
     public JwtResponse authorize(@RequestBody JwtRequest authRequest){
         try {
-            System.out.println(authRequest);
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(),
                     authRequest.getPassword()));
         } catch(BadCredentialsException e){
@@ -68,6 +67,11 @@ public class AuthService {
     public void sendActivationCodeAuth(String username){
         Person person = personService.findByUsername(username);
         personService.sendActivationCode(person);
+    }
+
+    public void sendPasswordCodeAuth(String username){
+        Person person = personService.findByUsername(username);
+        personService.sendPasswordCode(person);
     }
     public JwtResponse refreshToken(String requestRefreshToken){
         return refreshTokenService.findByToken(requestRefreshToken)

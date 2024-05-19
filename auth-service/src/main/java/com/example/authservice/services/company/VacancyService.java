@@ -3,10 +3,13 @@ package com.example.authservice.services.company;
 import com.example.authservice.DTOs.company.vacancy.VacancyCreateDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyFilterDTO;
+import com.example.authservice.DTOs.company.vacancy.VacancyRecommendedDTO;
+import com.example.authservice.DTOs.profile.node.NodeDTO;
 import com.example.authservice.models.profile.Node;
 import com.example.authservice.models.profile.Profile;
 import com.example.authservice.models.profile.WorkExperience;
 import com.example.authservice.models.vacancies.Company;
+import com.example.authservice.models.vacancies.ExperienceLevel;
 import com.example.authservice.models.vacancies.SortType;
 import com.example.authservice.models.vacancies.Vacancies;
 import com.example.authservice.repositories.company.VacancyRepository;
@@ -27,13 +30,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class VacancyService {
-
-
     private final VacancyRepository vacancyRepository;
     private final CompanyService companyService;
     private final ModelMapper modelMapper;
     private final NodeService nodeService;
-    private final PersonService personService;
     private final ProfileService profileService;
     private final WorkExperienceService workExperienceService;
     public List<VacancyDTO> getAllVacanciesDTO() {
@@ -51,12 +51,10 @@ public class VacancyService {
     public Vacancies getVacancyById(Long id) {
         return vacancyRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Vacancies not found with id: " + id));
     }
-
     public VacancyDTO getVacancyDTOById(Long id) {
         Vacancies vacancy = getVacancyById(id);
         return new VacancyDTO(vacancy);
     }
-
     public VacancyDTO createVacancy(VacancyCreateDTO vacancyCreateDTO,Long  companyId) {
         Company company = companyService.getCompanyById(companyId);
         Vacancies vacancy = mapDTOToVacancy(vacancyCreateDTO);
@@ -69,7 +67,6 @@ public class VacancyService {
         Vacancies savedVacancy = vacancyRepository.save(vacancy);
         return new VacancyDTO(savedVacancy);
     }
-
     public VacancyDTO updateVacancy(Long id, VacancyDTO vacancyUpdateDTO) {
         Vacancies existingVacancy = vacancyRepository.findById(id).orElse(null);
         if (existingVacancy != null) {
@@ -95,10 +92,8 @@ public class VacancyService {
             Vacancies updatedVacancy = vacancyRepository.save(existingVacancy);
             return mapVacancyToDTO(updatedVacancy);
         }
-
         return null;
     }
-
     @Transactional
     public void deleteVacancy(Long id) {
         Vacancies vacancies = getVacancyById(id);
@@ -106,23 +101,36 @@ public class VacancyService {
         company.getVacancies().remove(vacancies);
         vacancyRepository.delete(vacancies);
     }
-
-    public List<VacancyDTO> getFilteredAndSortedVacancies(VacancyFilterDTO filterDTO, String username) {
+    public List<VacancyRecommendedDTO> getFilteredAndSortedVacancies(VacancyFilterDTO filterDTO, String username) {
         List<Vacancies> allVacancies = getAllVacancies();
-        List<Vacancies> sortedVacancies;
-
-        if (filterDTOIsEmpty(filterDTO)) {
-            sortedVacancies = allVacancies;
-        } else {
-            sortedVacancies = sortVacancies(allVacancies, filterDTO.getSortType(),username);
-        }
-
-        return sortedVacancies.stream()
-                .filter(vacancy -> filterByCriteria(vacancy, filterDTO))
-                .map(VacancyDTO::new)
+        List<VacancyRecommendedDTO> sortedVacancies;
+        List<VacancyRecommendedDTO> recommendedDTOList = allVacancies.stream()
+                .map(vacancy -> new VacancyRecommendedDTO(vacancy, 0))
                 .collect(Collectors.toList());
+        if(username!=null){
+            try{
+                RecommendationEngine recommendationEngine = new RecommendationEngine();
+                Profile profile = profileService.getProfileByUsername(username);
+                List<WorkExperience> workExperiences = workExperienceService.getWorkExperienceByUsername(username);
+                recommendedDTOList = recommendationEngine.getRecommendedData(profile,workExperiences,allVacancies);
+            } catch (Exception e){
+                System.out.println("Ошибка");
+            }
+        }
+            if (filterDTOIsEmpty(filterDTO)) {
+                sortedVacancies = recommendedDTOList;
+            } else {
+                sortedVacancies = sortVacanciesDTO(recommendedDTOList, filterDTO.getSortType());
+            }
+            if(filterDTO!=null){
+                return sortedVacancies.stream()
+                        .filter(recommendedDTO -> filterByCriteriaDTO(recommendedDTO, filterDTO))
+                        .collect(Collectors.toList());
+            }
+            else {
+                return sortedVacancies;
+            }
     }
-
     private boolean filterDTOIsEmpty(VacancyFilterDTO filterDTO) {
         return filterDTO == null ||
                 (filterDTO.getSortType() == null &&
@@ -133,71 +141,54 @@ public class VacancyService {
                         filterDTO.getCity() == null &&
                         (filterDTO.getSkills() == null || filterDTO.getSkills().isEmpty()));
     }
-
-    private List<Vacancies> sortVacancies(List<Vacancies> vacancies, SortType sortType,String username) {
-        if(sortType == null){
+    private List<VacancyRecommendedDTO> sortVacanciesDTO(List<VacancyRecommendedDTO> vacancies, SortType sortType) {
+        if (sortType == null) {
             return vacancies;
         }
         switch (sortType) {
             case PRICE_ASCENDING:
                 return vacancies.stream()
-                        .sorted(Comparator.comparingDouble(vacancy -> vacancy.getSalary().getMinSalary()))
+                        .sorted(Comparator.comparingDouble(vacancy -> vacancy.getVacancy().getSalary().getMinSalary()))
                         .collect(Collectors.toList());
             case PRICE_DESCENDING:
-                List<Vacancies> filteredList = vacancies.stream()
-                        .sorted(Comparator.comparingDouble(vacancy -> vacancy.getSalary().getMinSalary()))
+                List<VacancyRecommendedDTO> filteredList = vacancies.stream()
+                        .sorted(Comparator.comparingDouble(vacancy -> vacancy.getVacancy().getSalary().getMinSalary()))
                         .collect(Collectors.toList());
                 Collections.reverse(filteredList);
                 return filteredList;
             case CREATING_DATE_ASCENDING:
                 return vacancies.stream()
-                        .sorted(Comparator.comparing(Vacancies::getCreatingTime))
+                        .sorted(Comparator.comparing(vacancy -> vacancy.getVacancy().getCreatingTime()))
                         .collect(Collectors.toList());
-            case CREATING_DATE_DESCENDING:
-                return vacancies.stream()
-                        .sorted(Comparator.comparing(Vacancies::getCreatingTime).reversed())
+            case CREATING_DATE_DESCENDING: {
+                List<VacancyRecommendedDTO> sortedList = vacancies.stream()
+                        .sorted(Comparator.comparing(vacancy -> vacancy.getVacancy().getCreatingTime()))
                         .collect(Collectors.toList());
-            case RECOMMENDATIONS:{
-                if(username!=null){
-                    try{
-                        RecommendationEngine recommendationEngine = new RecommendationEngine();
-                        Profile profile = profileService.getProfileByUsername(username);
-                        List<WorkExperience> workExperiences = workExperienceService.getWorkExperienceByUsername(username);
-                       return recommendationEngine.sortVacanciesByRecommended(profile,workExperiences,vacancies);
-                    }
-                    catch (Exception e){
-                        return vacancies;
-                    }
-
-
-                }else {
-                    return vacancies;
-                }
-
-
+                Collections.reverse(sortedList);
+                return sortedList;
             }
-
             default:
                 return vacancies;
         }
     }
-
-    private boolean filterByCriteria(Vacancies vacancy, VacancyFilterDTO filterDTO) {
-        return (filterDTO.getTitle() == null || vacancy.getTitle().contains(filterDTO.getTitle())) &&
-                (filterDTO.getMinSalary() == 0 || vacancy.getSalary() != null && vacancy.getSalary().getMinSalary() >= filterDTO.getMinSalary()) &&
-                (filterDTO.getExperienceLevel() == null || vacancy.getExperienceLevel() == filterDTO.getExperienceLevel()) &&
-                (filterDTO.getCountry() == null || vacancy.getCompany().getLocation().getCountry().equals(filterDTO.getCountry())) &&
-                (filterDTO.getCity() == null || vacancy.getCompany().getLocation().getCity().equals(filterDTO.getCity())) &&
-                (filterDTO.getSkills() == null || filterDTO.getSkills().isEmpty() || vacancy.getSkills().stream().map(Node::getTitle).collect(Collectors.toList()).containsAll(filterDTO.getSkills()));
+    private boolean filterByCriteriaDTO(VacancyRecommendedDTO recommendedDTO, VacancyFilterDTO filterDTO) {
+        VacancyDTO vacancyDTO = recommendedDTO.getVacancy();
+        return (filterDTO.getTitle() == null || filterDTO.getTitle().isEmpty() || vacancyDTO.getTitle().toLowerCase().contains(filterDTO.getTitle().toLowerCase())) &&
+                (filterDTO.getMinSalary() == 0 || vacancyDTO.getSalary() != null && vacancyDTO.getSalary().getMinSalary() >= filterDTO.getMinSalary()) &&
+                (filterDTO.getExperienceLevel() == null || filterDTO.getExperienceLevel() == ExperienceLevel.NO_FILTER || vacancyDTO.getExperienceLevel() == filterDTO.getExperienceLevel()) &&
+                (filterDTO.getCountry() == null || filterDTO.getCountry().isEmpty() || vacancyDTO.getCountry().equalsIgnoreCase(filterDTO.getCountry())) &&
+                (filterDTO.getCity() == null || filterDTO.getCity().isEmpty() || vacancyDTO.getCity().equalsIgnoreCase(filterDTO.getCity())) &&
+                (filterDTO.getSkills() == null || filterDTO.getSkills().isEmpty() || filterByCriteriaSkillsDTO(recommendedDTO, filterDTO));
+    }
+    private boolean filterByCriteriaSkillsDTO(VacancyRecommendedDTO recommendedDTO, VacancyFilterDTO filterDTO) {
+        VacancyDTO vacancyDTO = recommendedDTO.getVacancy();
+        boolean containsAllSkills = vacancyDTO.getSkills().containsAll(filterDTO.getSkills());
+        boolean hasMoreSkills = vacancyDTO.getSkills().size() >= filterDTO.getSkills().size();
+        return containsAllSkills && hasMoreSkills;
     }
     private VacancyDTO mapVacancyToDTO(Vacancies vacancy) {
         return modelMapper.map(vacancy, VacancyDTO.class);
     }
-
-    private Vacancies mapDTOToVacancy(VacancyDTO vacancyDTO) {
-        return modelMapper.map(vacancyDTO, Vacancies.class);
-    }
-
     private Vacancies mapDTOToVacancy(VacancyCreateDTO vacancyCreateDTO) {
         return modelMapper.map(vacancyCreateDTO, Vacancies.class);
     }

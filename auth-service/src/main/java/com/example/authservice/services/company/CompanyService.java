@@ -39,7 +39,6 @@ public class CompanyService {
         return companyRepository.findByPersonUsername(username).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with username: " + username));
     }
     public Company getCompanyByCompanyName(String companyName) {
-        System.out.println("Company: "+companyName);
         return companyRepository.findByCompanyName(companyName).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Company not found with companyName: " + companyName));
     }
 
@@ -87,31 +86,26 @@ public class CompanyService {
             if (companyCreateDTO.getPhoneNumber() != null) {
                 existingCompany.setPhoneNumber(companyCreateDTO.getPhoneNumber());
             }
-
+            //todo Make saom fers
             Company updatedCompany = companyRepository.save(existingCompany);
             return mapCompanyToDTO(updatedCompany);
         }
 
         return null;
     }
-
     @Transactional
     public void deleteCompany(String username) {
         Company company = getCompanyByUsername(username);
         Person person = company.getPerson();
         person.setCompany(null);
-        System.out.println(company.getCompanyName());
         companyRepository.deleteById(company.getId());
     }
-
     private CompanyDTO mapCompanyToDTO(Company company) {
         return modelMapper.map(company, CompanyDTO.class);
     }
-
     private Company mapDTOToCompany(CompanyDTO companyDTO) {
         return modelMapper.map(companyDTO, Company.class);
     }
-
     private Company mapDTOToCompany(CompanyCreateDTO companyCreateDTO) {
         return modelMapper.map(companyCreateDTO, Company.class);
     }

@@ -131,7 +131,6 @@ public class NodeService {
             }
             nodeRepository.save(existing);
         }
-        System.out.println(";");
     }
 
 

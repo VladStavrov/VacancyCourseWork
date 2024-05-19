@@ -3,6 +3,7 @@ package com.example.authservice.controllers;
 import com.example.authservice.DTOs.company.vacancy.VacancyCreateDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyDTO;
 import com.example.authservice.DTOs.company.vacancy.VacancyFilterDTO;
+import com.example.authservice.DTOs.company.vacancy.VacancyRecommendedDTO;
 import com.example.authservice.DTOs.profile.work.WorkExperienceDTO;
 import com.example.authservice.services.company.VacancyService;
 import jakarta.validation.Valid;
@@ -35,11 +36,12 @@ public class VacancyController {
         return new ResponseEntity<>(vacancyDTOS, HttpStatus.OK);
     }
     @PostMapping("/vacancies")
-    public ResponseEntity<List<VacancyDTO>> getFilteredAndSortedVacancies(
-            @RequestBody VacancyFilterDTO filterDTO,
+    public ResponseEntity<List<VacancyRecommendedDTO>> getFilteredAndSortedVacancies(
+            @RequestBody (required = false) VacancyFilterDTO filterDTO,
             @RequestParam(value = "username", required = false) String username
     ) {
-        List<VacancyDTO> filteredVacancies;
+
+        List<VacancyRecommendedDTO> filteredVacancies;
 
             filteredVacancies = vacancyService.getFilteredAndSortedVacancies(filterDTO, username);
 
